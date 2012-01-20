@@ -97,8 +97,9 @@ Components of the layout are modified in the Numishare XForms Theme section.
 						<script type="text/javascript" src="{$display_path}javascript/compare_functions.js"/>
 						<script type="text/javascript" src="{$display_path}javascript/numishare-menu.js"/>
 					</xsl:when>
-					<xsl:when test="$pipeline='maps'">
+					<xsl:when test="$pipeline='maps'">						
 						<link type="text/css" href="{$display_path}jquery.fancybox-1.3.4.css" rel="stylesheet"/>
+						<script type="text/javascript" src="{$display_path}javascript/jquery.fancybox-1.3.4.min.js"/>
 						<script type="text/javascript" src="{$display_path}javascript/jquery.livequery.js"/>
 						<script type="text/javascript">
 						$(document).ready(function(){

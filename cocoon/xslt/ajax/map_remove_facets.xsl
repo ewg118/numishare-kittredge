@@ -172,7 +172,7 @@
 
 		<xsl:if test="string($tokenized_q[2])">
 			<div class="ui-widget ui-state-default ui-corner-all stacked_term">
-				<a id="clear_terms" href="?q={concat('department_facet:(', substring-before(substring-after($q, 'department_facet:('), ')'), ')')}">Clear All Terms</a>
+				<a id="clear_terms" href="#">Clear All Terms</a>
 			</div>
 		</xsl:if>
 	</xsl:template>

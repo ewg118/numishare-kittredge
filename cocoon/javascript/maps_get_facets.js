@@ -1,10 +1,3 @@
-/************************************
-GET FACET TERMS IN RESULTS PAGE
-Written by Ethan Gruber, gruber@numismatics.org
-Library: jQuery
-Description: This utilizes ajax to populate the list of terms in the facet category in the results page.
-If the list is populated and then hidden, when it is re-activated, it fades in rather than executing the ajax call again.
-************************************/
 $(document).ready(function () {
 	//hover over terms
 	$(".filter_facet").livequery(function(){ 
@@ -14,58 +7,52 @@ $(document).ready(function () {
 				$(this).removeClass("ui-state-hover");
 		});
 	});
-	$(".remove_filter").livequery(function(){ 
-		$(this) .hover(function () {
-				$(this).parent().addClass("ui-state-hover");
-			}, function () {
-				$(this).parent().removeClass("ui-state-hover");
-		});
-	});
-	$("#clear_terms").livequery(function(){ 
-		$(this) .hover(function () {
-				$(this).parent().addClass("ui-state-hover");
-			}, function () {
-				$(this).parent().removeClass("ui-state-hover");
-		});
-	});	
-
-	$('.departments').children('input[type=checkbox]').click(function () {
-		var departments = new Array();
-		var query_string = '';
-		$('.departments').children('input:checked').each(function () {
-			departments.push('"' + $(this).val() + '"');
-		});
-		if (departments.length > 0) {
-			query_string = 'department_facet:(' + departments.join(' OR ') + ')';
-			$('#query').attr('value', query_string);
-			$('#basicMap').html('');
-			initialize_map(query_string);
-			$.get('remove_maps_facets', {
-				q: query_string
-			},
-			function (data) {
-				$('.remove_facets') .html(data);
-			});
-			$.get('update_maps_filters', {
-				q: query_string
-			},
-			function (data) {
-				
-				$('#filter_list') .html(data);
-			});
-		} else {
-			$('#basicMap').html('');
-			$('#filter_list').html('');
-			$('.remove_facets').html('');
-			$('#query').attr('value', '');
-			display_terrain();
-		}
+	$("#backgroundPopup").livequery('click', function (event) {
+		disablePopup();
 	});
 	
 	var popupStatus = 0;
-	var section = $('#filter_list').attr('section');
-	var pipeline = 'get_' + section + '_facets';
-	display_terrain();
+	var q = '*:*';
+	initialize_map(q);
+	maps_update_filters(q);
+	
+	//functions
+	function maps_update_filters(q){
+		//clear html from ul
+		$.get('maps_update_filters', {
+			q: q
+		}, function (data) {
+			$('#filter_list').html(data);
+		});
+	}
+	
+	function maps_get_facets(q, category, sort, limit, offset){
+		//clear html from ul
+		$.get('maps_get_facets', {
+				q: q, category: category, sort: sort, limit: limit, offset: offset
+			},
+			function (data) {				
+				$('#' + category + '-list').html(data);
+			});
+		$('#' + category + '-list') .fadeIn('slow');
+		$('#' + category + '-list') .removeClass('hidden');
+		if (popupStatus == 0) {
+			$(this) .parent().addClass('ui-state-active')
+			$("#backgroundPopup").fadeIn("fast");
+			popupStatus = 1;
+		}
+	}
+	
+	function maps_remove_facets (q){
+		//clear html from div
+		$.get('maps_remove_facets', {
+			q: q
+		},
+		function (data) {		
+			$('.remove_facets').html(data);
+		});	
+				
+	}
 	
 	//click on a non-category term
 	$('.fn span').livequery('click', function (event) {
@@ -78,21 +65,9 @@ $(document).ready(function () {
 		}
 		$('#query').attr('value', source + href.split('=')[1]);
 		var q = $('#query').attr('value');
-		$.get('remove_maps_facets', {
-			q: q
-		},
-		function (data) {
-			$('.remove_facets') .html(data);
-		});
-		$.get('update_maps_filters', {
-			q: q
-		},
-		function (data) {
-			
-			$('#filter_list') .html(data);
-		});
+		maps_remove_facets(q);
 		disablePopup();
-		initialize_map(q);
+		initialize_map(q);		
 	});
 	
 	//click on a non-category term
@@ -101,24 +76,14 @@ $(document).ready(function () {
 		var href = $(this).attr('href');
 		var q = href.split('=')[1];
 		$('#query').attr('value', q);
-		$.get('remove_maps_facets', {
-			q: q
-		},
-		function (data) {
-			$('.remove_facets') .html(data);
-		});
-		$.get('update_maps_filters', {
-			q: q
-		},
-		function (data) {
-			$('#filter_list') .html(data);
-		});
+		maps_remove_facets(q);
+		maps_update_filters(q);
 		disablePopup();
 		initialize_map(q);
 	});
 	
 	//click on a category term
-	$('.category_term').livequery('click', function (event) {
+	/*$('.category_term').livequery('click', function (event) {
 		$('#basicMap').html('');
 		var href = $(this).attr('href');
 		if ($('#query').attr('value') == '*:*') {
@@ -128,96 +93,49 @@ $(document).ready(function () {
 		}
 		$('#query').attr('value', source + href.split('=')[1]);
 		var q = $('#query').attr('value');
-		$.get('remove_maps_facets', {
-			q: q
-		},
-		function (data) {
-			$('.remove_facets') .html(data);
-		});
-		$.get('update_maps_filters', {
-			q: q
-		},
-		function (data) {
-			$('#filter_list') .html(data);
-		});
+		maps_remove_facets(q);
+		maps_update_filters(q);
 		disablePopup();
 		initialize_map(q);
-	});
+	});*/
 	
 	//remove a filter
 	$('.remove_filter').livequery('click', function (event) {
 		$('#basicMap').html('');
 		var q = unescape($(this).attr('href')).split('=')[1];
-		$.get('remove_maps_facets', {
-			q: q
-		},
-		function (data) {
-			$('.remove_facets') .html(data);
-		});
-		$.get('update_maps_filters', {
-			q: q
-		},
-		function (data) {
-			$('#filter_list') .html(data);
-		});
+		maps_remove_facets(q);
+		maps_update_filters(q);
 		$('#query').attr('value', q);
 		initialize_map(q);
 		return false;
 	});
 	
+	//clear search facets, reset query
 	$('#clear_terms').livequery('click', function (event) {
-		var q = $(this).attr('q');
+		var q = '*:*';
 		$('#basicMap').html('');
-		$.get('remove_maps_facets', {
-			q: q
-		},
-		function (data) {
-			$('.remove_facets') .html(data);
-		});
-		$.get('update_maps_filters', {
-			q: q
-		},
-		function (data) {
-			$('#filter_list') .html(data);
-		});
+		maps_remove_facets(q);
+		maps_update_filters(q);
 		$('#query').attr('value', q);
 		initialize_map(q);
 		return false;
+	});
+	
+	//clear ajax results div
+	$('#clear_all').livequery('click', function (event) {
+		$('#results').empty();		
 	});
 	
 	$('.filter_heading').livequery('click', function (event) {
-		var list_id = $(this) .parent() .attr('id').split('_link')[0] + '-list';
 		var category = $(this) .parent() .attr('id') .split('_link')[0];
 		var q = $('#query').attr('value');
-		if (category == 'category_facet') {
-			$.get('get_categories', {
-				q: q, category: category, prefix: 'L1', fq: '*', section: 'search', mode: 'maps'
-			},
-			function (data) {
-				$('#' + list_id) .html(data);
-			});
-		} else {
-			$.get(pipeline, {
-				q: q, category: category, sort: 'index', limit: 20, offset: 0
-			},
-			function (data) {
-				$('#' + list_id) .html(data);
-			});
-		}
-		//$(this) .attr('class', 'facet_label facet_label_selected')
-		$('#' + list_id) .fadeIn('slow');
-		$('#' + list_id) .removeClass('hidden');
-		if (popupStatus == 0) {
-			$(this) .parent().addClass('ui-state-active')
-			$("#backgroundPopup").fadeIn("fast");
-			popupStatus = 1;
-		}
-	});
-	$("#backgroundPopup").livequery('click', function (event) {
-		disablePopup();
+		var sort = 'index';
+		var limit = 20;
+		var offset = 0;
+		maps_get_facets(q, category, sort, limit, offset);
 	});
 	
-	$('.expand_category') .livequery('click', function (event) {
+	/*$('.expand_category') .livequery('click', function (event) {
 		var fq = $(this) .attr('id').split('__')[0];
 		var list = fq.split('|')[1] + '__list';
 		var prefix = $(this).attr('next-prefix');
@@ -237,19 +155,16 @@ $(document).ready(function () {
 			$(this) .parent('.term') .children('.category_level') .hide();
 			$(this) .children('img') .attr('src', $(this) .children('img').attr('src').replace('minus', 'plus'));
 		}
-	});
+	});*/
 	
 	$('.sort_facet').livequery('click', function (event) {
 		var category = $(this) .attr('id') .split('-')[0];
 		var list_id = category + '-list';
 		var q = $('#query').attr('value');
 		var sort = $(this) .attr('id') .split('-')[1];
-		$.get(pipeline, {
-			q: q, category: category, sort: sort, limit: 20, offset: 0, sectin: section
-		},
-		function (data) {
-			$('#' + list_id) .html(data);
-		});
+		var limit = 20;
+		var offset = 0;
+		maps_get_facets(q, category, sort, limit, offset);
 	});
 	
 	$('.page-facets').livequery('click', function (event) {
@@ -259,12 +174,8 @@ $(document).ready(function () {
 		var q = $('#query').attr('value');
 		var offset = $(this) .attr('title').split(':')[0];
 		var sort = $(this) .attr('title').split(':')[1];
-		$.get(pipeline, {
-			q: q, category: category, sort: sort, limit: 20, offset: offset, section: section
-		},
-		function (data) {
-			$('#' + list_id) .html(data);
-		});
+		var limit = 20;
+		maps_get_facets(q, category, sort, limit, offset);
 	});
 	
 	$('.close_facets').livequery('click', function (event) {
@@ -273,23 +184,7 @@ $(document).ready(function () {
 		disablePopup();
 	});
 	
-	$('#imagesavailable') .click(function () {
-		var q = $('#query').attr('value');
-		if ($('#imagesavailable input:checked').val() !== undefined) {
-			var new_query = query + ' AND imagesavailable:true';
-			location.href = 'maps?q=' + new_query;
-		} else {
-			var new_query = query.replace(' AND imagesavailable:true', '');
-			location.href = 'maps?q=' + new_query;
-		}
-	});
-	
-	$('#clear_coins').livequery('click', function (event) {
-		$('#results').html('');
-		return false;
-	});
-	
-	$('.pagingBtn') .livequery('click', function (event) {
+	$('a.pagingBtn') .livequery('click', function (event) {
 		var href = 'results_ajax' + $(this) .attr('href');
 		$.get(href, {
 		},

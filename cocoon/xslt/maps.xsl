@@ -11,8 +11,9 @@
 
 	<xsl:template name="maps">
 		<div id="bd">
+			<div id="backgroundPopup"/>
 			<h1>Maps</h1>				
-			<cinclude:include src="cocoon:/get_department_checkbox"/>
+			<!--<cinclude:include src="cocoon:/get_department_checkbox"/>-->
 			<div class="remove_facets"/>
 			
 			<xsl:choose>

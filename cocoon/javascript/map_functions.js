@@ -119,20 +119,7 @@ function initialize_map(q) {
 			mint_query += ')';
 		} else {
 			mint_query = 'mint_uri:"' + mint_uris[0] + '"';
-		}
-		mint_query += ' AND ';
-		if (event.feature.cluster.length >1 ){
-			mint_query += '(';
-			for (var i in mint_names){
-				mint_query += 'mint_facet:"' + mint_names[i] + '"';
-				if (i < mint_uris.length - 1){
-					mint_query += ' OR ';
-				}	
-			}
-			mint_query += ')';
-		} else {
-			mint_query += 'mint_facet:"' + mint_names[0] + '"';
-		}		
+		}	
 		var query = q + ' AND ' + mint_query;
 		
 		message += '.<br/><br/>';

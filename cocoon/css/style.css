@@ -455,7 +455,7 @@ button.ui-multiselect {
 	width:600px;
 	height:400px;
 }
-#clear_coins {
+#clear_all {
 	font-size:80%;
 	margin-left:25px;
 }
@@ -485,8 +485,7 @@ button.ui-multiselect {
 .g_doc {
 	width:30%;
 	float:left;
-	height:225px;
-	margin:2px;
+	height:325px;
 }
 /* gallery image container */
 .gi_c {

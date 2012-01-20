@@ -9,7 +9,7 @@ $(document).ready(function() {
 		assembleQuery();
 	});
 
-	assembleQuery() {
+	function assembleQuery() {
 		var search_text = $('#qs_text') .attr('value');
 		var query = $('#qs_query').attr('value');
 		if (search_text != null && search_text != '') {
