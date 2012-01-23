@@ -66,6 +66,7 @@ $(document).ready(function () {
 		$('#query').attr('value', source + href.split('=')[1]);
 		var q = $('#query').attr('value');
 		maps_remove_facets(q);
+		maps_update_filters(q);
 		disablePopup();
 		initialize_map(q);		
 	});

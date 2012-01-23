@@ -6,7 +6,7 @@
 
 	<xsl:template match="/">
 		<xsl:for-each
-			select="//lst[@name='facet_fields']/lst[count(int) &gt; 0 and @name !='mint_facet' and @name != 'department_facet']">
+			select="//lst[@name='facet_fields']/lst[number(int[@name='numFacetTerms']) &gt; 0 and @name !='mint_facet']">
 			<li class="filter_facet ui-widget ui-state-default ui-corner-all" id="{@name}_link" label="{$q}">
 				<div class="filter_heading">
 					<xsl:call-template name="normalize_fields">

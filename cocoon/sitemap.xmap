@@ -93,7 +93,7 @@
 					These only need to be changed if Solr and Orbeon are run on a different server or Tomcat application than Cocoon -->
 				<solr-url>http://localhost:8080/solr/numishare-published/</solr-url>
 				<exist-url>http://localhost:8080/orbeon/exist/rest/db/</exist-url>
-				<collection-name>kittredge</collection-name>
+				<collection-name>numishare</collection-name>
 			</global-variables>
 		</map:component-configurations>
 		
@@ -257,7 +257,7 @@
 			<!-- CHARTS AND GRAPHS -->
 			<map:match pattern="visualize">
 				<map:aggregate element="content">
-					<map:part src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:{request-param:q}}&amp;rows=0&amp;facet.limit=1&amp;f.{request-param:category}.facet.limit={request-param:limit}&amp;facet.field=artist_facet&amp;facet.field=authority_facet&amp;facet.field=category_facet&amp;facet.field=era_sint&amp;facet.field=dob_sint&amp;facet.field=degree_facet&amp;facet.field=deity_facet&amp;facet.field=denomination_facet&amp;facet.field=department_facet&amp;facet.field=famname_facet&amp;facet.field=engraver_facet&amp;facet.field=era_facet&amp;facet.field=findspot_facet&amp;facet.field=issuer_facet&amp;facet.field=locality_facet&amp;facet.field=maker_facet&amp;facet.field=manufacture_facet&amp;facet.field=material_facet&amp;facet.field=mint_facet&amp;facet.field=moneyer_facet&amp;facet.field=format_facet&amp;facet.field=persname_facet&amp;facet.field=region_facet&amp;facet.field=script_facet&amp;facet.field=series_facet&amp;facet.field=subjectEvent_facet&amp;facet.field=subjectIssuer_facet&amp;facet.field=subjectPerson_facet&amp;facet.field=subjectPlace_facet"/>
+					<map:part src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:{request-param:q}}&amp;rows=0&amp;facet.limit=1&amp;f.{request-param:category}.facet.limit={request-param:limit}&amp;facet.field=artist_facet&amp;facet.field=authority_facet&amp;facet.field=category_facet&amp;facet.field=era_sint&amp;facet.field=dob_sint&amp;facet.field=degree_facet&amp;facet.field=deity_facet&amp;facet.field=denomination_facet&amp;facet.field=department_facet&amp;facet.field=dynasty_facet&amp;facet.field=engraver_facet&amp;facet.field=era_facet&amp;facet.field=findspot_facet&amp;facet.field=issuer_facet&amp;facet.field=locality_facet&amp;facet.field=maker_facet&amp;facet.field=manufacture_facet&amp;facet.field=material_facet&amp;facet.field=mint_facet&amp;facet.field=moneyer_facet&amp;facet.field=format_facet&amp;facet.field=persname_facet&amp;facet.field=region_facet&amp;facet.field=script_facet&amp;facet.field=series_facet&amp;facet.field=subjectEvent_facet&amp;facet.field=subjectIssuer_facet&amp;facet.field=subjectPerson_facet&amp;facet.field=subjectPlace_facet"/>
 					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
 				</map:aggregate>				
 				<map:transform type="xslt-saxon" src="xslt/layout.xsl" label="basiccontent">
@@ -344,7 +344,7 @@
 			
 			<map:match pattern="maps">
 				<map:aggregate element="content">
-					<map:part src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:mint_geo:*}&amp;start={request-param:start}&amp;sort={url-encode:{request-param:sort}}&amp;facet.limit=1&amp;rows=0&amp;facet.field=authority_facet&amp;facet.field=artist_facet&amp;facet.field=category_facet&amp;facet.field=era_num&amp;facet.field=dob_num&amp;facet.field=deity_facet&amp;facet.field=degree_facet&amp;facet.field=denomination_facet&amp;facet.field=department_facet&amp;facet.field=famname_facet&amp;facet.field=engraver_facet&amp;facet.field=era_facet&amp;facet.field=findspot_facet&amp;facet.field=issuer_facet&amp;facet.field=locality_facet&amp;facet.field=maker_facet&amp;facet.field=manufacture_facet&amp;facet.field=material_facet&amp;facet.field=mint_facet&amp;facet.field=moneyer_facet&amp;facet.field=objectType_facet&amp;facet.field=persname_facet&amp;facet.field=region_facet&amp;facet.field=script_facet&amp;facet.field=series_facet&amp;facet.field=subjectEvent_facet&amp;facet.field=subjectIssuer_facet&amp;facet.field=subjectPerson_facet&amp;facet.field=subjectPlace_facet"/>
+					<map:part src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:mint_geo:*}"/>
 					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
 				</map:aggregate>				
 				<map:transform type="xslt-saxon" src="xslt/layout.xsl" label="basiccontent">
@@ -459,7 +459,7 @@
 			</map:match>
 
 			<!-- maps section ajax -->
-			<map:match pattern="get_maps_facets">
+			<map:match pattern="maps_get_facets">
 				<map:generate
 					src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:{request-param:q} AND mint_geo:[* TO *]}&amp;category={request-param:category}&amp;facet.field={request-param:category}&amp;facet.sort={request-param:sort}&amp;f.{request-param:category}.facet.offset={request-param:offset}&amp;facet.limit={request-param:limit}&amp;rows=0"
 					label="record"/>
@@ -470,7 +470,7 @@
 				<map:serialize type="html"/>
 			</map:match>
 
-			<map:match pattern="remove_maps_facets">
+			<map:match pattern="maps_remove_facets">
 				<map:generate src="xml/empty.xml" label="record"/>
 				<map:transform type="xslt-saxon" src="xslt/ajax/map_remove_facets.xsl" label="basiccontent">
 					<map:parameter name="use-request-parameters" value="true"/>
@@ -478,9 +478,9 @@
 				<map:serialize type="html"/>
 			</map:match>
 
-			<map:match pattern="update_maps_filters">
+			<map:match pattern="maps_update_filters">
 				<map:generate
-					src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:{request-param:q} AND mint_geo:[* TO *]}&amp;start={request-param:start}&amp;facet.limit=1&amp;rows=0&amp;facet.field=authority_facet&amp;facet.field=artist_facet&amp;facet.field=category_facet&amp;facet.field=century_num&amp;facet.field=city_facet&amp;facet.field=dob_num&amp;facet.field=deity_facet&amp;facet.field=degree_facet&amp;facet.field=denomination_facet&amp;facet.field=department_facet&amp;facet.field=dynasty_facet&amp;facet.field=engraver_facet&amp;facet.field=era_facet&amp;facet.field=corpname_facet&amp;facet.field=issuer_facet&amp;facet.field=locality_facet&amp;facet.field=maker_facet&amp;facet.field=manufacture_facet&amp;facet.field=material_facet&amp;facet.field=mint_facet&amp;facet.field=moneyer_facet&amp;facet.field=objectType_facet&amp;facet.field=persname_facet&amp;facet.field=region_facet&amp;facet.field=script_facet&amp;facet.field=series_facet&amp;facet.field=subjectEvent_facet&amp;facet.field=subjectIssuer_facet&amp;facet.field=subjectPerson_facet&amp;facet.field=subjectPlace_facet"
+					src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:{request-param:q} AND mint_geo:[* TO *]}&amp;start={request-param:start}&amp;rows=0&amp;facet.field=artist_facet&amp;facet.field=authority_facet&amp;facet.field=category_facet&amp;facet.field=collection_facet&amp;facet.field=decoration_facet&amp;facet.field=deity_facet&amp;facet.field=degree_facet&amp;facet.field=denomination_facet&amp;facet.field=department_facet&amp;facet.field=dynasty_facet&amp;facet.field=engraver_facet&amp;facet.field=era_facet&amp;facet.field=findspot_facet&amp;facet.field=grade_facet&amp;facet.field=institution_facet&amp;facet.field=issuer_facet&amp;facet.field=portrait_facet&amp;facet.field=manufacture_facet&amp;facet.field=maker_facet&amp;facet.field=material_facet&amp;facet.field=mint_facet&amp;facet.field=objectType_facet&amp;facet.field=owner_facet&amp;facet.field=region_facet&amp;facet.field=repository_facet&amp;facet.field=script_facet&amp;facet.field=series_facet&amp;facet.field=state_facet&amp;facet.field=subject_facet&amp;facet.numFacetTerms=1"
 					label="record"/>
 				<map:transform type="xslt-saxon" src="xslt/ajax/map_update_filters.xsl" label="basiccontent">
 					<map:parameter name="use-request-parameters" value="true"/>
