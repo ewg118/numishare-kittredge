@@ -133,7 +133,7 @@ Components of the layout are modified in the Numishare XForms Theme section.
 								$('a.thumbImage').fancybox();
 							});
 						</script>
-						<xsl:if test="//lst[@name='mint_geo']/int[@name='_count_'] &gt; 0">
+						<xsl:if test="//lst[@name='mint_geo']/int[@name='numFacetTerms'] &gt; 0">
 							<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript">//</script>
 							<script src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false">//</script>
 							<script type="text/javascript" src="{$display_path}javascript/result_map_functions.js"/>

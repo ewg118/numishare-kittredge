@@ -26,7 +26,7 @@
 					select="lst[@name = 'category_facet' or @name = 'mint_facet' or @name = 'denomination_facet' or @name='material_facet' or @name='century_num' or @name='persname_facet']" mode="facet"/>
 				<hr/>
 				<xsl:apply-templates
-					select="lst[number(int[@name='_count_']) &gt; 0 and @name != 'category_facet' and @name != 'mint_facet' and @name != 'denomination_facet' and @name != 'material_facet' and @name != 'century_num' and @name != 'persname_facet' and @name != 'dynasty_facet'  and @name != 'era_facet']"
+					select="lst[number(int[@name='numFacetTerms']) &gt; 0 and @name != 'category_facet' and @name != 'mint_facet' and @name != 'denomination_facet' and @name != 'material_facet' and @name != 'century_num' and @name != 'persname_facet' and @name != 'dynasty_facet'  and @name != 'era_facet']"
 					mode="facet"/>
 			</xsl:when>
 			<xsl:when test="$department='Greek'">
@@ -34,7 +34,7 @@
 					select="lst[@name = 'category_facet' or @name = 'mint_facet' or @name = 'denomination_facet' or @name='material_facet' or @name='century_num' or @name='persname_facet']" mode="facet"/>
 				<hr/>
 				<xsl:apply-templates
-					select="lst[number(int[@name='_count_']) &gt; 0 and @name != 'category_facet' and @name != 'mint_facet' and @name != 'denomination_facet' and @name != 'material_facet' and @name != 'century_num' and @name != 'persname_facet' and @name != 'dynasty_facet']"
+					select="lst[number(int[@name='numFacetTerms']) &gt; 0 and @name != 'category_facet' and @name != 'mint_facet' and @name != 'denomination_facet' and @name != 'material_facet' and @name != 'century_num' and @name != 'persname_facet' and @name != 'dynasty_facet']"
 					mode="facet"/>
 			</xsl:when>
 			<xsl:otherwise>
@@ -42,7 +42,7 @@
 					select="lst[@name = 'category_facet' or @name = 'mint_facet' or @name = 'denomination_facet' or @name='material_facet' or @name='century_num' or @name='persname_facet']" mode="facet"/>
 				<hr/>
 				<xsl:apply-templates
-					select="lst[number(int[@name='_count_']) &gt; 0 and @name != 'category_facet' and @name != 'mint_facet' and @name != 'denomination_facet' and @name != 'material_facet' and @name != 'century_num' and @name != 'persname_facet']"
+					select="lst[number(int[@name='numFacetTerms']) &gt; 0 and @name != 'category_facet' and @name != 'mint_facet' and @name != 'denomination_facet' and @name != 'material_facet' and @name != 'century_num' and @name != 'persname_facet']"
 					mode="facet"/>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -100,7 +100,7 @@
 					</xsl:call-template>
 				</xsl:variable>
 
-				<xsl:variable name="count" select="number(int[@name='_count_'])"/>
+				<xsl:variable name="count" select="number(int[@name='numFacetTerms'])"/>
 
 				<xsl:variable name="mincount" as="xs:integer">
 					<xsl:choose>

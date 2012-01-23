@@ -246,7 +246,7 @@
 
 	<xsl:template match="lst[@name='facet_fields']">
 		<!-- ignore mint_geo-->
-		<xsl:for-each select="lst[not(@name='mint_geo') and number(int[@name='_count_']) &gt; 0]">
+		<xsl:for-each select="lst[not(@name='mint_geo') and number(int[@name='numFacetTerms']) &gt; 0]">
 			<xsl:variable name="val" select="@name"/>
 			<xsl:variable name="new_query">
 				<xsl:for-each select="$tokenized_q[not(contains(., $val))]">
@@ -304,7 +304,7 @@
 					<br/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:variable name="count" select="number(int[@name='_count_'])"/>
+					<xsl:variable name="count" select="number(int[@name='numFacetTerms'])"/>
 					<xsl:variable name="mincount" as="xs:integer">
 						<xsl:choose>
 							<xsl:when test="$count &gt; 500">
@@ -723,13 +723,13 @@
 		<div class="remove_facets">
 			<xsl:choose>
 				<xsl:when test="$q = '*:*'">
-					<h1>All Terms <xsl:if test="//lst[@name='mint_geo']/int[@name='_count_'] &gt; 0">
+					<h1>All Terms <xsl:if test="//lst[@name='mint_geo']/int[@name='numFacetTerms'] &gt; 0">
 						<a href="#resultMap" id="map_results">Map Results</a>
 					</xsl:if>
 					</h1>
 				</xsl:when>
 				<xsl:otherwise>
-					<h1>Filters <xsl:if test="//lst[@name='mint_geo']/int[@name='_count_'] &gt; 0">
+					<h1>Filters <xsl:if test="//lst[@name='mint_geo']/int[@name='numFacetTerms'] &gt; 0">
 						<a href="#resultMap" id="map_results">Map Results</a>
 					</xsl:if>
 					</h1>

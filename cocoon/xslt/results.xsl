@@ -23,7 +23,7 @@
 						<xsl:choose>
 							<xsl:when test="$numFound &gt; 0">
 								<!-- include resultMap div when there are geographical results-->
-								<xsl:if test="//lst[@name='mint_geo']/int[@name='_count_'] &gt; 0">
+								<xsl:if test="//lst[@name='mint_geo']/int[@name='numFacetTerms'] &gt; 0">
 									<div style="display:none">
 										<div id="resultMap"/>
 									</div>
@@ -49,7 +49,7 @@
 						<a href="{$display_path}feed/?q={$q}">
 							<img src="{$display_path}images/atom-medium.png" title="Atom" alt="Atom"/>
 						</a>
-						<xsl:if test="//lst[@name='mint_geo']/int[@name='_count_'] &gt; 0">
+						<xsl:if test="//lst[@name='mint_geo']/int[@name='numFacetTerms'] &gt; 0">
 							<a href="{$display_path}query.kml?q={$q}">
 								<img src="{$display_path}images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
 							</a>
