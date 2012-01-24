@@ -76,8 +76,8 @@
 	<xsl:template name="normalize_fields">
 		<xsl:param name="field"/>
 		<xsl:choose>
-			<xsl:when test="$field = 'identifier_display'">Accession</xsl:when>
-			<xsl:when test="$field = 'identifier_text'">Accession</xsl:when>
+			<xsl:when test="$field = 'identifier_display'">Identifier</xsl:when>
+			<xsl:when test="$field = 'identifier_text'">Identifier</xsl:when>
 			<xsl:when test="$field = 'artist_facet'">Artist</xsl:when>
 			<xsl:when test="$field = 'authority_facet'">Authority</xsl:when>
 			<xsl:when test="$field = 'category_facet'">Category</xsl:when>
@@ -99,6 +99,7 @@
 			<xsl:when test="$field = 'dynasty_facet'">Dynasty</xsl:when>
 			<xsl:when test="$field = 'findspot_facet'">Findspot</xsl:when>
 			<xsl:when test="$field = 'findspot_text'">Findspot</xsl:when>
+			<xsl:when test="$field = 'geonames_uri'">Geonames URI</xsl:when>
 			<xsl:when test="$field = 'geogname_text'">Geographical Location</xsl:when>
 			<xsl:when test="$field = 'grade_facet'">Grade</xsl:when>
 			<xsl:when test="$field = 'objectType_facet'">Object Type</xsl:when>
@@ -115,6 +116,7 @@
 			<xsl:when test="$field = 'maker_facet'">Maker</xsl:when>
 			<xsl:when test="$field = 'mint_facet'">Mint</xsl:when>
 			<xsl:when test="$field = 'mint_text'">Mint</xsl:when>
+			<xsl:when test="$field = 'nomisma_uri'">Nomisma URI</xsl:when>
 			<xsl:when test="$field = 'obv_leg_display'">Obv. Legend</xsl:when>
 			<xsl:when test="$field = 'owner_facet'">Owner</xsl:when>
 			<xsl:when test="$field = 'persname_facet'">Person</xsl:when>

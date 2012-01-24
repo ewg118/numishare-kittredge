@@ -2,7 +2,7 @@
 <?cocoon-disable-caching?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" version="2.0"
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mets="http://www.loc.gov/METS/" xmlns:exsl="http://exslt.org/common" xmlns:numishare="http://code.google.com/p/numishare/"
-	xmlns:skos="http://www.w3.org/2008/05/skos#" exclude-result-prefixes="xs rdf xlink mets exsl numishare xsl skos xlink">
+	xmlns:skos="http://www.w3.org/2008/05/skos#" xmlns:cinclude="http://apache.org/cocoon/include/1.0" exclude-result-prefixes="xs rdf xlink mets exsl numishare xsl skos xlink cinclude">
 
 	<xsl:variable name="id" select="normalize-space(/content/nuds/nudsHeader/nudsid)"/>
 	<xsl:variable name="recordType" select="/content/nuds/@recordType"/>
@@ -73,7 +73,7 @@
 						<xsl:call-template name="page_content"/>
 						<xsl:if test="digRep/associatedObject">
 							<div class="objects">
-								<h2>Associated Objects</h2>
+								<h2>Examples of this type</h2>
 								<xsl:apply-templates select="digRep/associatedObject"/>
 							</div>
 						</xsl:if>
@@ -207,6 +207,11 @@
 								<a href="#map">Map</a>
 							</li>
 						</xsl:if>
+						<xsl:if test="$recordType='conceptual' and count(//associatedObject) &gt; 0">
+							<li>
+								<a href="#charts">Quantitative</a>
+							</li>
+						</xsl:if>
 						<xsl:if test="descMeta/adminDesc/*">
 							<li>
 								<a href="#administrative">Administrative</a>
@@ -273,6 +278,11 @@
 									</xsl:if>
 								</xsl:for-each>
 							</ul>
+						</div>
+					</xsl:if>
+					<xsl:if test="$recordType='conceptual' and count(//associatedObject) &gt; 0">
+						<div id="charts">
+							<xsl:call-template name="charts"/>
 						</div>
 					</xsl:if>
 					<xsl:if test="descMeta/adminDesc/*">
@@ -702,6 +712,92 @@
 				</xsl:for-each>
 			</xsl:when>
 		</xsl:choose>
+	</xsl:template>
+	
+	<!-- charts template -->
+	<xsl:template name="charts">
+		<h2>Quantitative Analysis</h2>
+		
+		<xsl:choose>
+			<xsl:when test="string($weightQuery)">
+				<table id="weights">
+					<caption>Average Weight for Coin-Type: <xsl:value-of select="$id"/></caption>
+					<thead>
+						<tr>
+							<td/>
+							<th>Average Weight</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>
+								<xsl:value-of select="$id"/>
+							</th>
+							<td>
+								<cinclude:include src="cocoon:/get_avg_weight?q=id:&#x022;{$id}&#x022;"/>
+							</td>
+						</tr>
+						<xsl:for-each select="$tokenized_weightQuery">
+							<tr>
+								<th>
+									<xsl:value-of select="substring-after(translate(., '&#x022;', ''), ':')"/>
+								</th>
+								<td>
+									<cinclude:include src="cocoon:/get_avg_weight?q={.}"/>
+								</td>
+							</tr>
+						</xsl:for-each>
+					</tbody>
+				</table>
+			</xsl:when>
+			<xsl:otherwise>
+				<p>Average weight for this coin-type: <cinclude:include src="cocoon:/get_avg_weight?q={.}"/> grams</p>
+			</xsl:otherwise>
+		</xsl:choose>
+		
+		<form id="charts-form" action="./{$id}#charts" style="margin:20px">
+			<h3>Compare weights in related categories</h3>
+			<!-- create checkboxes for available facets -->
+			<xsl:for-each select="//material|//denomination|//department|//manufacture|//persname|//corpname|//famname|//geogname">
+				<xsl:sort select="local-name()"/>
+				<xsl:variable name="name">
+					<xsl:choose>
+						<xsl:when test="string(@role)">
+							<xsl:value-of select="@role"/>
+						</xsl:when>
+						<xsl:when test="string(@type)">
+							<xsl:value-of select="@type"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="local-name()"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<xsl:variable name="query_fragment" select="concat($name, '_facet:&#x022;', ., '&#x022;')"/>
+				
+				<xsl:choose>
+					<xsl:when test="contains($weightQuery, $query_fragment)">
+						<input type="checkbox" id="{$name}-checkbox" checked="checked" value="{$query_fragment}" class="weight-checkbox"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<input type="checkbox" id="{$name}-checkbox" value="{$query_fragment}" class="weight-checkbox"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				
+				<label for="{$name}-checkbox">
+					<xsl:value-of select="concat(upper-case(substring($name, 1, 1)), substring($name, 2))"/>
+					<xsl:text>: </xsl:text>
+					<xsl:value-of select="."/>
+				</label>
+				<br/>
+				
+				
+			</xsl:for-each>
+			<input type="hidden" name="weightQuery" id="weights-q" value=""/>
+			<br/>
+			<input type="submit" value="Modify Chart" id="submit-weights"/>
+		</form>
 	</xsl:template>
 
 	<!--<xsl:when test="$field = 'category_facet'">

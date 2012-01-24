@@ -89,7 +89,8 @@ Components of the layout are modified in the Numishare XForms Theme section.
 				<!-- pipeline-specific javascript includes -->
 				<xsl:choose>
 					<xsl:when test="$pipeline='index'">
-						<script type="text/javascript" src="{$display_path}javascript/get_features.js"/>
+						<script type="text/javascript" src="javascript/quick_search.js"/>
+						<!--<script type="text/javascript" src="{$display_path}javascript/get_features.js"/>-->
 					</xsl:when>
 					<xsl:when test="$pipeline='compare'">
 						<script type="text/javascript" src="{$display_path}javascript/jquery.livequery.js"/>
@@ -154,13 +155,13 @@ Components of the layout are modified in the Numishare XForms Theme section.
 					</xsl:when>
 					<xsl:when test="$pipeline='display'">
 						<xsl:if test="//nuds/@recordType='conceptual'">
-							<link type="text/css" href="{$display_path}jquery.fancybox-1.3.4.css" rel="stylesheet"/>
+							<link type="text/css" href="{$display_path}jquery.fancybox-1.3.4.css" rel="stylesheet"/>								
+							<link type="text/css" href="{$display_path}visualize.css" rel="stylesheet"/>
+							<link type="text/css" href="{$display_path}visualize-light.css" rel="stylesheet"/>
 							<script type="text/javascript" src="{$display_path}javascript/jquery.fancybox-1.3.4.min.js"/>
-							<script type="text/javascript">
-								$(document).ready(function(){
-		                                                                		$('a.thumbImage').fancybox();
-								});
-							</script>
+							<script type="text/javascript" src="{$display_path}javascript/visualize.jQuery.js"/>
+							<script type="text/javascript" src="{$display_path}javascript/excanvas.js"/>							
+							<script type="text/javascript" src="{$display_path}javascript/display_functions.js"/>							
 						</xsl:if>
 					</xsl:when>
 					<xsl:when test="$pipeline='visualize'">
@@ -171,7 +172,7 @@ Components of the layout are modified in the Numishare XForms Theme section.
 						<script type="text/javascript">
 							$(document).ready(function() {
 								$('table').visualize({
-									width: 800<xsl:value-of select="if(string($type)) then concat(', type:&#x022;', $type, '&#x022;') else ''"/>
+									width: 600<xsl:value-of select="if(string($type)) then concat(', type:&#x022;', $type, '&#x022;') else ''"/>
 									<xsl:value-of select="if(string($pieMargin)) then concat(', pieMargin:', $pieMargin) else ''"/>
 									<xsl:value-of select="if(string($lineWeight)) then concat(', lineWeight:', $lineWeight) else ''"/>
 									<xsl:value-of select="if(string($pieLabelPos)) then concat(', pieLabelPos:&#x022;', $pieLabelPos, '&#x022;') else ''"/>

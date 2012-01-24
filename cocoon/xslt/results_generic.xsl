@@ -75,6 +75,14 @@
 							</dd>
 						</div>
 					</xsl:if>
+					<xsl:if test="arr[@name='diameter_num']">
+						<div>
+							<dt>Diameter: </dt>
+							<dd style="margin-left:150px;">
+								<xsl:value-of select="float[@name='diameter_num']"/>
+							</dd>
+						</div>
+					</xsl:if>
 					<xsl:if test="float[@name='weight_num']">
 						<div>
 							<dt>Weight: </dt>
@@ -82,58 +90,15 @@
 								<xsl:value-of select="float[@name='weight_num']"/>
 							</dd>
 						</div>
-					</xsl:if>
-					<xsl:if test="arr[@name='dimensions_display']">
-						<div>
-							<dt>Measurements: </dt>
-							<dd style="margin-left:150px;">
-								<xsl:for-each select="arr[@name='dimensions_display']/str">
-									<xsl:value-of select="."/>
-									<xsl:text> mm</xsl:text>
-									<xsl:if test="not(position() = last())">
-										<xsl:text>, </xsl:text>
-									</xsl:if>
-								</xsl:for-each>
-							</dd>
-						</div>
-					</xsl:if>
-					<xsl:if test="str[@name='axis_num']">
+					</xsl:if>					
+					<!--<xsl:if test="str[@name='axis_num']">
 						<div>
 							<dt>Axis: </dt>
 							<dd style="margin-left:150px;">
 								<xsl:value-of select="str[@name='axis_num']"/>
 							</dd>
 						</div>
-					</xsl:if>
-					<xsl:if test="str[@name='findspot_facet']">
-						<div>
-							<dt>Findspot: </dt>
-							<dd style="margin-left:150px;">
-								<xsl:value-of select="str[@name='findspot_facet']"/>
-							</dd>
-						</div>
-					</xsl:if>
-					<xsl:if test="str[@name='category_display']">
-						<div>
-							<dt>Category: </dt>
-							<dd style="margin-left:150px;">
-								<xsl:value-of select="replace(str[@name='category_display'], '_', ' ')"/>
-							</dd>
-						</div>
-					</xsl:if>
-					<xsl:if test="string(arr[@name='department_facet']/str[1])">
-						<div>
-							<dt>Department: </dt>
-							<dd style="margin-left:150px;">
-								<xsl:for-each select="arr[@name='department_facet']/str">
-									<xsl:value-of select="."/>
-									<xsl:if test="not(position() = last())">
-										<xsl:text>, </xsl:text>
-									</xsl:if>
-								</xsl:for-each>
-							</dd>
-						</div>
-					</xsl:if>
+					</xsl:if>-->
 					<xsl:if test="arr[@name='reference_display']">
 						<div>
 							<dt>Reference(s): </dt>
@@ -649,7 +614,7 @@
 
 	<xsl:template name="sort">
 		<xsl:variable name="sort_categories_string">
-			<xsl:text>identifier_display,authority_facet,century_num,color_display,dob_num,timestamp,degree_facet,deity_facet,denomination_facet,department_facet,dimensions_display,dynasty_facet,era_facet,findspot_facet,issuer_facet,locality_facet,manufacture_facet,material_facet,mint_facet,obv_leg_display,objectType_facet,persname_facet,prevcoll_display,reference_display,region_facet,rev_leg_display,weight_num,year_num</xsl:text>
+			<xsl:text>identifier_display,authority_facet,century_num,color_display,dob_num,timestamp,degree_facet,deity_facet,denomination_facet,department_facet,diameter_num,dynasty_facet,findspot_facet,issuer_facet,manufacture_facet,material_facet,mint_facet,obv_leg_display,objectType_facet,portrait_facet,prevcoll_display,reference_display,region_facet,rev_leg_display,weight_num,year_num</xsl:text>
 		</xsl:variable>
 		<xsl:variable name="sort_categories" select="tokenize(normalize-space($sort_categories_string), ',')"/>
 

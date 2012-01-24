@@ -207,7 +207,8 @@
 					<map:parameter name="use-request-parameters" value="true"/>					
 					<map:parameter name="solr-url" value="{global:solr-url}"/>
 					<map:parameter name="pipeline" value="display"/>
-				</map:transform>				
+				</map:transform>		
+				<map:transform type="cinclude"/>				
 				<map:serialize type="html"/>
 			</map:match>
 
@@ -486,6 +487,17 @@
 					<map:parameter name="use-request-parameters" value="true"/>
 				</map:transform>
 				<map:serialize type="html"/>
+			</map:match>
+			
+			<!-- for quantitative analysis -->
+			<map:match pattern="get_avg_weight">
+				<map:generate
+					src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:{request-param:q}}&amp;facet=true&amp;facet.field=ao_weight&amp;rows=0"
+					label="record"/>
+				<map:transform type="xslt-saxon" src="xslt/ajax/get_avg_weight.xsl" label="basiccontent">
+					<map:parameter name="use-request-parameters" value="true"/>
+				</map:transform>
+				<map:serialize type="text"/>
 			</map:match>
 			
 			<!-- not AJAX, but xsl:document() querying -->

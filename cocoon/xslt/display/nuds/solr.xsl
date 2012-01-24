@@ -135,6 +135,11 @@
 			</field>
 		</xsl:if>
 		
+		<!-- set imagesavailable to true if there are associated images -->
+		<xsl:if test="exsl:node-set($objectDoc)//mets:FLocat/@xlink:href">
+			<field name="imagesavailable">true</field>
+		</xsl:if>
+		
 		<!-- get findspot, if available -->
 		<xsl:if test="count(exsl:node-set($objectDoc)//findspot) &gt; 0">
 			<xsl:variable name="name" select="exsl:node-set($objectDoc)//findspot/name"/>
@@ -340,7 +345,7 @@
 		<field name="date_display">
 			<xsl:value-of select="normalize-space(.)"/>
 		</field>
-		<xsl:if test="string(normalize-space(@normal))">
+		<xsl:if test="@normal">
 			<xsl:choose>
 				<xsl:when test="not(contains(@normal, '/'))">
 					<xsl:choose>
@@ -430,11 +435,9 @@
 					</field>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:if test="number(@normal)">
-						<field name="year_num">
-							<xsl:value-of select="number(normalize-space(@normal))"/>
-						</field>
-					</xsl:if>
+					<field name="year_num">
+						<xsl:value-of select="number(normalize-space(@normal))"/>
+					</field>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
