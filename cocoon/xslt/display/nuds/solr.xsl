@@ -340,7 +340,7 @@
 		<field name="date_display">
 			<xsl:value-of select="normalize-space(.)"/>
 		</field>
-		<xsl:if test="@normal">
+		<xsl:if test="string(normalize-space(@normal))">
 			<xsl:choose>
 				<xsl:when test="not(contains(@normal, '/'))">
 					<xsl:choose>
@@ -430,9 +430,11 @@
 					</field>
 				</xsl:when>
 				<xsl:otherwise>
-					<field name="year_num">
-						<xsl:value-of select="number(normalize-space(@normal))"/>
-					</field>
+					<xsl:if test="number(@normal)">
+						<field name="year_num">
+							<xsl:value-of select="number(normalize-space(@normal))"/>
+						</field>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
