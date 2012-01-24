@@ -170,7 +170,7 @@
 				</adminDesc>
 				<xsl:apply-templates select="descendant::bibliography"/>
 			</descMeta>
-			<xsl:if test="descendant::daogrp">
+			<xsl:if test="descendant::daogrp[string(daoloc[1]/@href)]">
 				<digRep>
 					<mets:fileSec>
 						<mets:fileGrp USE="obverse">

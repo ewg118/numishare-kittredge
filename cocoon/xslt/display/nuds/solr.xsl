@@ -192,7 +192,7 @@
 			<xsl:if test="name()='geogname' and string(@rdf:resource)">
 				<xsl:choose>
 					<xsl:when test="contains(@rdf:resource, 'geonames')">
-						<xsl:variable name="geonameId" select="substring-before(substring-after(@rdf:resource, 'http://www.geonames.org/'), '/')"/>						
+						<xsl:variable name="geonameId" select="substring-before(substring-after(@rdf:resource, 'geonames.org/'), '/')"/>						
 						<xsl:variable name="geonames_data" select="document(concat($geonames-url, '/get?geonameId=', $geonameId, '&amp;username=anscoins&amp;style=full'))"/>
 						<xsl:variable name="coordinates"
 							select="concat(exsl:node-set($geonames_data)//lng, ',', exsl:node-set($geonames_data)//lat)"/>
