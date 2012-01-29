@@ -36,7 +36,10 @@ ol li, ul li, dl li {
 	list-style-type:none;
 }
 html {
-	background-color:silver;
+	font:13px arial, helvetica, sans-serif;
+	background:#44573a url(images/background.png) repeat-x;
+	margin:0;
+	padding:15px 0;
 }
 #bd {
 	padding:5px;
@@ -77,10 +80,10 @@ dt {
   HEADER
   ***************************************
  */
-.banner {
+/*.banner {
 	padding:5px;
 	background-color:#ebebeb;
-}
+}*/
 #hd .align-left {
 	text-align:left;
 }

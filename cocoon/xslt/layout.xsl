@@ -89,8 +89,8 @@ Components of the layout are modified in the Numishare XForms Theme section.
 				<!-- pipeline-specific javascript includes -->
 				<xsl:choose>
 					<xsl:when test="$pipeline='index'">
-						<script type="text/javascript" src="javascript/quick_search.js"/>
-						<!--<script type="text/javascript" src="{$display_path}javascript/get_features.js"/>-->
+						<script type="text/javascript" src="{$display_path}javascript/quick_search.js"/>
+						<script type="text/javascript" src="{$display_path}javascript/get_features.js"/>
 					</xsl:when>
 					<xsl:when test="$pipeline='compare'">
 						<script type="text/javascript" src="{$display_path}javascript/jquery.livequery.js"/>
@@ -190,7 +190,7 @@ Components of the layout are modified in the Numishare XForms Theme section.
 
 			</head>
 			<body class="yui-skin-sam">
-				<div id="doc4" class="{//config/theme/layouts/*[name()=$pipeline]/yui_class}">
+				<div id="doc4" class="{//config/theme/layouts/*[name()=$pipeline]/yui_class} ui-corner-all">
 					<xsl:call-template name="header"/>
 					<xsl:choose>
 						<xsl:when test="$pipeline='index'">

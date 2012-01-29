@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?cocoon-disable-caching?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:datetime="http://exslt.org/dates-and-times" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:exsl="http://exslt.org/common" xmlns:mets="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:skos="http://www.w3.org/2008/05/skos#">
-	<xsl:output method="xml" encoding="UTF-8"/>	
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:datetime="http://exslt.org/dates-and-times" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:exsl="http://exslt.org/common" xmlns:mets="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:gml="http://www.opengis.net/gml" xmlns:skos="http://www.w3.org/2008/05/skos#">
+	<xsl:output method="xml" encoding="UTF-8"/>
 
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
@@ -37,7 +38,7 @@
 				<xsl:for-each select="descendant-or-self::node()[@normal]">
 					<xsl:value-of select="@normal"/>
 					<xsl:text> </xsl:text>
-				</xsl:for-each>				
+				</xsl:for-each>
 			</field>
 		</doc>
 	</xsl:template>
@@ -50,25 +51,23 @@
 			<field name="department_facet">
 				<xsl:value-of select="department"/>
 			</field>
-		</xsl:if>		
+		</xsl:if>
 		<xsl:apply-templates select="physDesc"/>
 		<xsl:apply-templates select="typeDesc"/>
 		<xsl:apply-templates select="adminDesc"/>
 		<xsl:apply-templates select="refDesc"/>
 		<xsl:apply-templates select="findspotDesc"/>
 	</xsl:template>
-	
+
 	<xsl:template match="findspotDesc">
 		<xsl:choose>
-			<xsl:when test="string(findspot/@rdf:resource)">
-				
-			</xsl:when>
+			<xsl:when test="string(findspot/@rdf:resource)"> </xsl:when>
 			<xsl:otherwise>
 				<field name="findspot_geo">
 					<xsl:value-of select="concat(findspot/name, '|', tokenize(findspot/gml:Point/gml:coordinates, ', ')[2], ',', tokenize(findspot/gml:Point/gml:coordinates, ', ')[1])"/>
 				</field>
 			</xsl:otherwise>
-		</xsl:choose>		
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="digRep">
@@ -77,16 +76,16 @@
 			<xsl:call-template name="associatedObject"/>
 		</xsl:for-each>
 	</xsl:template>
-	
+
 	<xsl:template name="associatedObject">
 		<xsl:variable name="objectDoc">
 			<xsl:copy-of select="document(concat(@rdf:resource, '.xml'))/nuds"/>
 		</xsl:variable>
-		
+
 		<field name="ao_uri">
 			<xsl:value-of select="@rdf:resource"/>
 		</field>
-		
+
 		<xsl:if test="number(exsl:node-set($objectDoc)//weight)">
 			<field name="ao_weight">
 				<xsl:value-of select="exsl:node-set($objectDoc)//weight"/>
@@ -102,7 +101,7 @@
 				<xsl:value-of select="exsl:node-set($objectDoc)//axis"/>
 			</field>
 		</xsl:if>
-		
+
 		<!-- images -->
 		<!-- thumbnails-->
 		<xsl:if test="string(exsl:node-set($objectDoc)//mets:fileGrp[@USE='obverse']/mets:file[@USE='thumbnail']/mets:FLocat/@xlink:href)">
@@ -134,18 +133,18 @@
 				<xsl:value-of select="exsl:node-set($objectDoc)//mets:fileGrp[@USE='reverse']/mets:file[@USE='reference']/mets:FLocat/@xlink:href"/>
 			</field>
 		</xsl:if>
-		
+
 		<!-- set imagesavailable to true if there are associated images -->
 		<xsl:if test="exsl:node-set($objectDoc)//mets:FLocat/@xlink:href">
 			<field name="imagesavailable">true</field>
 		</xsl:if>
-		
+
 		<!-- get findspot, if available -->
 		<xsl:if test="count(exsl:node-set($objectDoc)//findspot) &gt; 0">
 			<xsl:variable name="name" select="exsl:node-set($objectDoc)//findspot/name"/>
-			<xsl:variable name="gml-coordinates" select="exsl:node-set($objectDoc)//findspot/gml:coordinates"/>			
-			<xsl:variable name="kml-coordinates" select="concat(tokenize($gml-coordinates, ', ')[2], ',', tokenize($gml-coordinates, ', ')[1])"	/>
-			
+			<xsl:variable name="gml-coordinates" select="exsl:node-set($objectDoc)//findspot/gml:coordinates"/>
+			<xsl:variable name="kml-coordinates" select="concat(tokenize($gml-coordinates, ', ')[2], ',', tokenize($gml-coordinates, ', ')[1])"/>
+
 			<xsl:if test="string($kml-coordinates)">
 				<field name="ao_findspot_geo">
 					<xsl:value-of select="concat($name, '|', @rdf:resource, '|', $kml-coordinates)"/>
@@ -153,7 +152,7 @@
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
-	
+
 	<xsl:template match="mets:fileSec">
 		<xsl:for-each select="mets:fileGrp">
 			<xsl:variable name="side" select="substring(@USE, 1, 3)"/>
@@ -197,10 +196,9 @@
 			<xsl:if test="name()='geogname' and string(@rdf:resource)">
 				<xsl:choose>
 					<xsl:when test="contains(@rdf:resource, 'geonames')">
-						<xsl:variable name="geonameId" select="substring-before(substring-after(@rdf:resource, 'geonames.org/'), '/')"/>						
+						<xsl:variable name="geonameId" select="substring-before(substring-after(@rdf:resource, 'geonames.org/'), '/')"/>
 						<xsl:variable name="geonames_data" select="document(concat($geonames-url, '/get?geonameId=', $geonameId, '&amp;username=anscoins&amp;style=full'))"/>
-						<xsl:variable name="coordinates"
-							select="concat(exsl:node-set($geonames_data)//lng, ',', exsl:node-set($geonames_data)//lat)"/>
+						<xsl:variable name="coordinates" select="concat(exsl:node-set($geonames_data)//lng, ',', exsl:node-set($geonames_data)//lat)"/>
 						<!-- *_geo format is 'mint name|URI of resource|KML-compliant geographic coordinates' -->
 						<field name="mint_geo">
 							<xsl:value-of select="."/>
@@ -227,7 +225,7 @@
 								<xsl:value-of select="@rdf:resource"/>
 								<xsl:text>|</xsl:text>
 								<xsl:value-of select="concat($lon, ',', $lat)"/>
-							</field>							
+							</field>
 							<xsl:if test="exsl:node-set($nomisma_data)//skos:related[contains(@rdf:resource, 'pleiades')]">
 								<field name="pleiades_uri">
 									<xsl:value-of select="exsl:node-set($nomisma_data)//skos:related[contains(@rdf:resource, 'pleiades')]/@rdf:resource"/>
@@ -267,7 +265,7 @@
 				</field>
 			</xsl:if>
 		</xsl:for-each>
-		
+
 		<field name="fulltext">
 			<xsl:for-each select="exsl:node-set($binding)/descendant-or-self::text()">
 				<xsl:value-of select="normalize-space(.)"/>
@@ -276,7 +274,7 @@
 			<xsl:for-each select="exsl:node-set($binding)/descendant-or-self::node()[@normal]">
 				<xsl:value-of select="@normal"/>
 				<xsl:text> </xsl:text>
-			</xsl:for-each>				
+			</xsl:for-each>
 		</field>
 	</xsl:template>
 
@@ -326,7 +324,7 @@
 			</field>
 		</xsl:for-each>
 	</xsl:template>
-	
+
 	<xsl:template match="dateOnObject">
 		<field name="dob_num">
 			<xsl:value-of select="date"/>
@@ -345,102 +343,33 @@
 		<field name="date_display">
 			<xsl:value-of select="normalize-space(.)"/>
 		</field>
-		<xsl:if test="@normal">
-			<xsl:choose>
-				<xsl:when test="not(contains(@normal, '/'))">
-					<xsl:choose>
-						<xsl:when test="contains(@normal, '-')">
-							<xsl:variable name="normal">
-								<xsl:value-of select="number(substring-after(@normal, '-'))"/>
-							</xsl:variable>
-							<xsl:variable name="century">
-								<xsl:value-of select="ceiling($normal div 100)"/>
-							</xsl:variable>
-							<field name="century_num">
-								<xsl:text>-</xsl:text>
-								<xsl:value-of select="$century"/>
-							</field>
-						</xsl:when>
-						<xsl:when test="not(contains(@normal, '-'))">
-							<xsl:variable name="century">
-								<xsl:value-of select="ceiling(@normal div 100)"/>
-							</xsl:variable>
-							<field name="century_num">
-								<xsl:value-of select="$century"/>
-							</field>
-						</xsl:when>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:when test="contains(@normal, '/')">
-					<xsl:variable name="start">
-						<xsl:value-of select="number(substring-before(@normal, '/'))"/>
-					</xsl:variable>
-					<xsl:variable name="end">
-						<xsl:value-of select="number(substring-after(@normal, '/'))"/>
-					</xsl:variable>
-					<xsl:choose>
-						<xsl:when test="contains($start, '-')">
-							<xsl:variable name="normal">
-								<xsl:value-of select="substring-after($start, '-')"/>
-							</xsl:variable>
-							<xsl:variable name="century">
-								<xsl:value-of select="ceiling($normal div 100)"/>
-							</xsl:variable>
-							<field name="century_num">
-								<xsl:text>-</xsl:text>
-								<xsl:value-of select="$century"/>
-							</field>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:variable name="century">
-								<xsl:value-of select="ceiling($start div 100)"/>
-							</xsl:variable>
-							<field name="century_num">
-								<xsl:value-of select="$century"/>
-							</field>
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:choose>
-						<xsl:when test="contains($end, '-')">
-							<xsl:variable name="normal">
-								<xsl:value-of select="substring-after($end, '-')"/>
-							</xsl:variable>
-							<xsl:variable name="century">
-								<xsl:value-of select="ceiling($normal div 100)"/>
-							</xsl:variable>
-							<field name="century_num">
-								<xsl:text>-</xsl:text>
-								<xsl:value-of select="$century"/>
-							</field>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:variable name="century">
-								<xsl:value-of select="ceiling($end div 100)"/>
-							</xsl:variable>
-							<field name="century_num">
-								<xsl:value-of select="$century"/>
-							</field>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-			</xsl:choose>
-
-			<xsl:choose>
-				<xsl:when test="contains(@normal, '/')">
-					<field name="year_num">
-						<xsl:value-of select="number(normalize-space(substring-before(@normal, '/')))"/>
-					</field>
-					<field name="year_num">
-						<xsl:value-of select="number(normalize-space(substring-after(@normal, '/')))"/>
-					</field>
-				</xsl:when>
-				<xsl:otherwise>
-					<field name="year_num">
-						<xsl:value-of select="number(normalize-space(@normal))"/>
-					</field>
-				</xsl:otherwise>
-			</xsl:choose>
+		<xsl:if test="string(normalize-space(@normal))">
+			<xsl:call-template name="get_date_hierarchy"/>
 		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="get_date_hierarchy">
+		<xsl:variable name="years" select="tokenize(normalize-space(@normal), '/')"/>
+
+		<xsl:for-each select="$years">
+			<xsl:if test="number(.)">
+				<xsl:variable name="year_string" select="."/>
+				<xsl:variable name="year" select="number($year_string)"/>
+				<xsl:variable name="century" select="floor($year div 100)"/>
+				<xsl:variable name="decade_digit" select="floor(number(substring($year_string, string-length($year_string) - 1, string-length($year_string))) div 10) * 10"/>
+				<xsl:variable name="decade" select="concat($century, if($decade_digit = 0) then '00' else $decade_digit)"/>
+
+				<field name="century_num">
+					<xsl:value-of select="$century"/>
+				</field>
+				<field name="decade_num">
+					<xsl:value-of select="$decade"/>
+				</field>
+				<field name="year_num">
+					<xsl:value-of select="$year"/>
+				</field>
+			</xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 
 	<xsl:template match="axis">
