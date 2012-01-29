@@ -566,30 +566,16 @@ button.ui-multiselect {
 #numishare-widget img {
 	padding:10px;
 }
-/*
-  ***************************************
-  TRIGGER POPUP STYLING
-  ***************************************
- */
-.trigger_container_header {
+/* Used for date (century/decade) facet*/
+.date-div{
+	margin-top:-10px;	
+}
+.century-multiselect-checkboxes{
 	display:table;
-	width:100%;
-	border-bottom:1px solid silver;
-	background-color:#efefef;
-	margin-bottom:10px;
-	padding:10px 0 10px 0;
+	width:100%;	
 }
-.delete_window {
-	width:400px;
-	height:200px;
-	background-color:white;
-	border:1px solid gray;
-	position:relative;
-	z-index:2;
-}
-.delete_button {
-	color:#8BADCF;
-	cursor:pointer;
+.decades-list{
+	margin:0 0 0 25px;	
 }
 .close {
 	float:right;
@@ -600,6 +586,8 @@ button.ui-multiselect {
 	font-weight:bold;
 	cursor:pointer;
 }
+
+/*background*/
 #backgroundPopup {
 	display:none;
 	position:fixed;
@@ -609,7 +597,7 @@ button.ui-multiselect {
 	width:100%;
 	top:0;
 	left:0;
-	z-index:1;
+	z-index:2001;
 /*
   background-color:black;
   opacity:0.6;

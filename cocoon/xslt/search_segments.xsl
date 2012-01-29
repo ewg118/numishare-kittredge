@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:numishare="http://code.google.com/p/numishare/">
 	<xsl:template name="search_options">
 		<option value="fulltext" class="search_option" id="keyword_option">Keyword</option>
 		<option value="identifier_display" class="search_option" id="identifier_option">Accession Number</option>
@@ -34,46 +34,13 @@
 		<option value="weight_num" class="search_option" id="weight_option">Weight</option>
 		<option value="year_num" class="search_option" id="year_option">Year</option>
 	</xsl:template>
+	
+	<xsl:function name="numishare:normalize_century">
+		<xsl:param name="name"/>
+		<xsl:value-of select="concat($name, '00s')"/>
+	</xsl:function>
 
-	<xsl:template name="regularize_century">
-		<xsl:param name="term" as="xs:integer"/>
-		<xsl:variable name="century" select="abs($term)"/>
-		<xsl:variable name="era">
-			<xsl:choose>
-				<xsl:when test="$term &lt; 6 and $term &gt; 0">A.D.</xsl:when>
-				<xsl:when test="$term &lt; 0">B.C.</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="suffix">
-			<xsl:choose>
-				<xsl:when test="$century mod 10 = 1 and $century != 11">
-					<xsl:text>st</xsl:text>
-				</xsl:when>
-				<xsl:when test="$century mod 10 = 2and $century != 12">
-					<xsl:text>nd</xsl:text>
-				</xsl:when>
-				<xsl:when test="$century mod 10 = 3and $century != 13">
-					<xsl:text>rd</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text>th</xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<!-- output string -->
-		<xsl:if test="$term &lt; 6 and $term &gt; 0">
-			<xsl:value-of select="$era"/>
-			<xsl:text> </xsl:text>
-		</xsl:if>
-		<xsl:value-of select="concat($century, $suffix)"/>
-		<xsl:if test="$term &lt; 0">
-			<xsl:text> </xsl:text>
-			<xsl:value-of select="$era"/>
-		</xsl:if>
-	</xsl:template>
-
-	<xsl:template name="normalize_fields">
+	<xsl:function name="numishare:normalize_fields">
 		<xsl:param name="field"/>
 		<xsl:choose>
 			<xsl:when test="$field = 'identifier_display'">Identifier</xsl:when>
@@ -86,6 +53,7 @@
 			<xsl:when test="$field = 'collection_facet'">Collection</xsl:when>
 			<xsl:when test="$field = 'color_display'">Color</xsl:when>
 			<xsl:when test="$field = 'color_text'">Color</xsl:when>
+			<xsl:when test="$field = 'decade_num'">Decade</xsl:when>
 			<xsl:when test="$field = 'timestamp'">Date Record Modified</xsl:when>
 			<xsl:when test="$field = 'deity_facet' or $field = 'deity_text'">Deity</xsl:when>
 			<xsl:when test="$field = 'denomination_facet'">Denomination</xsl:when>
@@ -144,26 +112,7 @@
 			<xsl:when test="$field = 'year_num'">Year</xsl:when>
 			<xsl:otherwise>Undefined Category</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template name="multifields">
-		<xsl:param name="field"/>
-		<xsl:param name="position"/>
-		<xsl:param name="fragments"/>
-		<xsl:param name="count"/>
-
-		<xsl:if test="substring-before($fragments[$position], ':') != $field">
-			<xsl:text>true</xsl:text>
-		</xsl:if>
-		<xsl:if test="$position &lt; $count and substring-before($fragments[$position], ':') = $field">
-			<xsl:call-template name="multifields">
-				<xsl:with-param name="position" select="$position + 1"/>
-				<xsl:with-param name="fragments" select="$fragments"/>
-				<xsl:with-param name="field" select="$field"/>
-				<xsl:with-param name="count" select="$count"/>
-			</xsl:call-template>
-		</xsl:if>
-	</xsl:template>
+	</xsl:function>
 
 	<xsl:template name="recompile_category">
 		<xsl:param name="level" as="xs:integer"/>

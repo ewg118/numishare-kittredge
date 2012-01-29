@@ -10,6 +10,7 @@ $(document).ready(function() {
 	var popupStatus = 0;
 	//set category button label on page load
 	category_label();
+	dateLabel();
 
 	$("#backgroundPopup").livequery('click', function(event) {
 		disablePopup();
@@ -226,30 +227,90 @@ $(document).ready(function() {
 		}
 	});
 	
-	$('#search_button') .click(function () {
-		var query = getQuery();
+	//handle expandable dates
+	$('#century_num_link').hover(function () {
+    		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-focus');
+	}, 
+	function () {
+		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all');
+	});
+	
+	$('.century-close') .click(function(){
+		disablePopup();
+	});
+	
+	$('#century_num_link').click(function () {
+		if (popupStatus == 0) {
+			$("#backgroundPopup").fadeIn("fast");
+			popupStatus = 1;
 		
-		//set the value attribute of the q param to the query assembled by javascript
-		$('#facet_form_query').attr('value', query);
+		}
+		var list_id = $(this) .attr('id').split('_link')[0] + '-list';
+		$('#' + list_id).parent('div').attr('style', 'width: 192px;display:block;');
+	});
+	
+	$('.expand_century').click(function(){
+		var century = $(this).attr('century');
+		var q = $(this).attr('q'); 
+		var expand_image = $(this).children('img').attr('src');
+		//hide list if it is expanded
+		if (expand_image.indexOf('minus') > 0){
+			$(this).children('img').attr('src', expand_image.replace('minus','plus'));
+			$('#century_' + century + '_list') .hide();
+		} else{
+			$(this).children('img').attr('src', expand_image.replace('plus','minus'));
+			//perform ajax load on first click of expand button
+			if ($(this).parent('li').children('ul').html().indexOf('<li') < 0){				
+				$.get('get_decades', {
+					q: q, century: century
+					}, function (data) {
+						$('#century_' + century + '_list').html(data);
+					}
+				);
+			}
+			$('#century_' + century + '_list') .show();			
+		}
+	});
+	
+	//check parent century box when a decade box is checked
+	$('.decade_checkbox').livequery('click', function(event){
+		if ($(this) .is(':checked')) {
+			//alert('test');
+			$(this) .parent('li').parent('ul').parent('li') .children('input') .attr('checked', true);			
+		}
+		//set label
+		dateLabel();
+	});
+	//uncheck child decades when century is unchecked
+	$('.century_checkbox').livequery('click', function(event){
+		if ($(this).not(':checked')) {
+			$(this).parent('li').children('ul').children('li').children('.decade_checkbox').attr('checked',false);
+		}
+		//set label
+		dateLabel();
+	});
+	
+	$('#search_button') .click(function () {
+		getQuery();
 	});
 	
 	function getQuery(){
 		//get categories
-		var query = '';
+		query = new Array();
 		
 		//get non-facet fields that may have been passed from search
 		var query_terms = $('#facet_form_query').attr('value').split(' AND ');	
 		var non_facet_terms = new Array();
 		for (i in query_terms){
-			if (query_terms[i].indexOf('_facet') < 0 && query_terms[i].indexOf('century_num') < 0 && query_terms[i].indexOf('dob_num') < 0 && query_terms[i] != '*:*'){
+			if (query_terms[i].indexOf('_facet') < 0 && query_terms[i].indexOf('century_num') < 0 && query_terms[i].indexOf('decade_num') < 0 && query_terms[i].indexOf('dob_num') < 0 && query_terms[i] != '*:*'){
 				non_facet_terms.push(query_terms[i]);				
 			}
 		}
 		if (non_facet_terms.length > 0){
-			query += ' AND ' + non_facet_terms.join(' AND ');
+			query.push(non_facet_terms.join(' AND '));
 		}
 		
-		categories = new Array();
+		/*categories = new Array();
 		$('.term') .children('input:checked') .each(function () {
 			if ($(this) .parent('.term') .html() .indexOf('category_level') < 0 || $(this) .parent('.term') .children('ul') .html() .indexOf('<li') < 0 || $(this) .parent('.term') .children('.category_level').find('input:checked').length == 0) {
 				segment = new Array();
@@ -267,6 +328,12 @@ $(document).ready(function() {
 			} else {
 				query += ' AND ' + categories[0];
 			}
+		}*/
+		
+		//get century/decades
+		var date = getDate();
+		if (date.length > 0){
+			query.push(getDate());
 		}
 		
 		//get multiselects
@@ -280,24 +347,72 @@ $(document).ready(function() {
 			});
 			if (segment[0] != null) {
 				if (segment.length > 1){
-					query += ' AND (' + segment.join(' OR ') + ')';
+					query.push('(' + segment.join(' OR ') + ')');
 				}
 				else {
-					query += ' AND ' + segment[0];
+					query.push(segment[0]);
 				}
-			}
+			}			
 		});
-		
-		if ($('#imagesavailable') .is(':checked')) {
-			query += ' AND imagesavailable:true';
-		}
-		
+		//set the value attribute of the q param to the query assembled by javascript
 		if (query.length > 0){
-			query = query.substring(5);
+			$('#facet_form_query').attr('value', query.join(' AND '));
 		} else {
-			query = '*:*';
-		}	
-		return query;
+			$('#facet_form_query').attr('value', '*:*');
+		}
+	}
+	
+	//function for assembling the Lucene syntax string for querying on centuries and decades
+	function getDate(){
+		var date_array = new Array();
+		$('.century_checkbox:checked').each(function(){
+			var century = 'century_num:' + $(this).val();
+			var decades = new Array();
+			$(this).parent('li').children('ul').children('li').children('.decade_checkbox:checked').each(function(){
+				decades.push('decade_num:' + $(this).val());
+			});
+			var decades_concat = '';
+			if (decades.length > 1){
+				decades_concat = '(' + decades.join(' OR ') + ')';
+				date_array.push(decades_concat);
+			} else if (decades.length == 1){				
+				date_array.push(decades[0]);
+			} else {
+				date_array.push(century);
+			}
+			
+		});
+		var date_query;
+		if (date_array.length > 1) {
+			 date_query = '(' + date_array.join(' OR ') + ')'
+		} else if (date_array.length == 1){
+			 date_query = date_array[0];
+		} else {
+			date_query = '';
+		}
+		return date_query;
+	};
+	
+	function dateLabel(){
+		dates = new Array();
+		$('.century_checkbox:checked').each(function(){
+			if ($(this).parent('li').children('ul').children('li').children('.decade_checkbox:checked').length == 0){				
+				dates.push($(this).val() + '00s');
+			} 				
+			$(this).parent('li').children('ul').children('li').children('.decade_checkbox:checked').each(function(){
+					dates.push($(this).val());
+			});				
+		});
+		if (dates.length > 3) {
+			var date_string = 'Date: ' + dates.length + ' selected';
+		} else if (dates.length > 0 && dates.length <= 3) {
+			var date_string = 'Date: ' + dates.join(', ');
+		} else if (dates.length == 0){
+			var date_string = 'Date';
+		}
+		//set labels
+		$('#century_num_link').attr('title', date_string);
+		$('#century_num_link').children('span:nth-child(2)').text(date_string);
 	}
 	
 	/***************************/
@@ -313,6 +428,7 @@ $(document).ready(function() {
 		if (popupStatus == 1) {	
 			$("#backgroundPopup").fadeOut("fast");
 			$('#category_facet-list') .parent('div').attr('style', 'width: 192px;');
+			$('#century_num-list') .parent('div').attr('style', 'width: 192px;');
 			popupStatus = 0;		
 		}
 	}

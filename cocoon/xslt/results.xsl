@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?cocoon-disable-caching?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:exsl="http://exslt.org/common" xmlns:cinclude="http://apache.org/cocoon/include/1.0"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xsl:include href="results_generic.xsl"/>
 	<xsl:include href="search_segments.xsl"/>
 
@@ -15,6 +15,7 @@
 	<xsl:variable name="numFound" select="//result[@name='response']/@numFound" as="xs:integer"/>
 
 	<xsl:template name="results">
+		<div id="backgroundPopup"/>
 		<div id="bd">
 			<div id="yui-main">
 				<div class="yui-b">
@@ -69,5 +70,5 @@
 				</xsl:if>
 			</div>
 		</div>
-	</xsl:template>	
+	</xsl:template>
 </xsl:stylesheet>
