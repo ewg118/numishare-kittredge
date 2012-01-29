@@ -8,10 +8,11 @@
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
+	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
 
 	<xsl:template match="/">
 		<add>
-			<xsl:apply-templates select="nuds"/>
+			<xsl:apply-templates select="/content/nuds"/>
 		</add>
 	</xsl:template>
 
@@ -197,7 +198,7 @@
 				<xsl:choose>
 					<xsl:when test="contains(@rdf:resource, 'geonames')">
 						<xsl:variable name="geonameId" select="substring-before(substring-after(@rdf:resource, 'geonames.org/'), '/')"/>
-						<xsl:variable name="geonames_data" select="document(concat($geonames-url, '/get?geonameId=', $geonameId, '&amp;username=anscoins&amp;style=full'))"/>
+						<xsl:variable name="geonames_data" select="document(concat($geonames-url, '/get?geonameId=', $geonameId, '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
 						<xsl:variable name="coordinates" select="concat(exsl:node-set($geonames_data)//lng, ',', exsl:node-set($geonames_data)//lat)"/>
 						<!-- *_geo format is 'mint name|URI of resource|KML-compliant geographic coordinates' -->
 						<field name="mint_geo">

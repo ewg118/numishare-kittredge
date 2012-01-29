@@ -99,7 +99,10 @@
 		
 		<map:pipeline type="noncaching">
 			<map:match pattern="display/*.solr">
-				<map:generate src="{global:exist-url}{global:collection-name}/objects/{1}.xml"/>
+				<map:aggregate element="content">
+					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
+					<map:part src="{global:exist-url}{global:collection-name}/objects/{1}.xml"/>
+				</map:aggregate>
 				<map:transform src="xslt/display/nuds/solr.xsl" type="xslt-saxon">
 					<map:parameter name="use-request-parameters" value="true"/>					
 				</map:transform>
