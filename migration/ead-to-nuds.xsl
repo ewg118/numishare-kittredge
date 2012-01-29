@@ -6,21 +6,20 @@
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
-
+	<xsl:variable name="mint_name">
+		<xsl:call-template name="mint_name">
+			<xsl:with-param name="mint" select="normalize-space(descendant::geogname[@role='city'][1])"/>
+		</xsl:call-template>
+	</xsl:variable>
 
 	<xsl:template match="/">
+		
 		<xsl:apply-templates select="/c"/>
 	</xsl:template>
 
 	<xsl:template match="c">
-		<xsl:variable name="mint_name">
-			<xsl:call-template name="mint_name">
-				<xsl:with-param name="mint" select="descendant::origination/geogname[@role='mint'][1]"/>
-			</xsl:call-template>
-		</xsl:variable>
-
 		<xsl:variable name="accnum" select="did/unitid[@type='accession']"/>
-
+		
 		<nuds recordType="physical" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:mets="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
 			xmlns:gml="http://www.opengis.net/gml">
 			<nudsHeader>
@@ -174,10 +173,95 @@
 						</authority>
 					</xsl:if>
 					<xsl:if test="count(descendant::geogname[@role='city']) &gt; 0 or count(descendant::geogname[@role='region']) &gt; 0">
-						<!--<geographic>
-							<xsl:apply-templates select="distinct-values(descendant::geogname[@role='city']/text())"/>
-							<xsl:apply-templates select="distinct-values(descendant::geogname[@role='region']/text())"/>
-						</geographic>-->
+						<xsl:variable name="states">
+							<xsl:for-each select="//geogname[@role='state']">
+								<xsl:value-of select="."/>
+								<xsl:if test="not(position()=last())">
+									<xsl:text>|</xsl:text>
+								</xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
+						
+						<geographic>
+							<xsl:for-each select="distinct-values(descendant::geogname[@role='city']/text())">
+								<xsl:variable name="mint" select="normalize-space(.)"/>
+								
+								<xsl:variable name="spreadsheet">
+									<xsl:text>https://spreadsheets.google.com/feeds/list/0Avp6BVZhfwHAdHQ5UE01dDAxOWFsWjJ2UGtiMmRCSnc/od6/public/values</xsl:text>
+								</xsl:variable>
+								<xsl:variable name="uri">
+									<xsl:choose>
+										<xsl:when test="count(document(concat($spreadsheet, '?sq=mint%3d%22', encode-for-uri($mint), '%22'))//atom:entry) = 1">
+											<xsl:value-of select="document(concat($spreadsheet, '?sq=mint%3d%22', encode-for-uri($mint), '%22'))//atom:entry/gsx:uri"/>
+										</xsl:when>
+										<xsl:when test="count(document(concat($spreadsheet, '?sq=mint%3d%22', encode-for-uri($mint), '%22'))//atom:entry) &gt; 1">
+											<xsl:for-each select="document(concat($spreadsheet, '?sq=mint%3d%22', encode-for-uri($mint), '%22'))//atom:entry[contains($states, gsx:state)]">
+												<xsl:value-of select="gsx:uri"/>
+											</xsl:for-each>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:variable>
+								<geogname role="mint">
+									<xsl:choose>
+										<xsl:when test="string($uri)">
+											<xsl:attribute name="rdf:resource" select="$uri"/>
+											
+											<xsl:variable name="geonameId" select="substring-before(substring-after($uri, 'geonames.org/'), '/')"/>
+											<xsl:variable name="geonames_data" select="document(concat($geonames-url, '/get?geonameId=', $geonameId, '&amp;username=anscoins&amp;style=full'))"/>
+											
+											<!-- get place name-->
+											<xsl:variable name="countryCode" select="exsl:node-set($geonames_data)/geoname/countryCode"/>
+											<xsl:variable name="countryName" select="exsl:node-set($geonames_data)/geoname/countryName"/>
+											<xsl:variable name="name" select="exsl:node-set($geonames_data)/geoname/name"/>
+											<xsl:variable name="adminName1" select="exsl:node-set($geonames_data)/geoname/adminName1"/>
+											<xsl:variable name="fcode" select="exsl:node-set($geonames_data)/geoname/fcode"/>
+											
+											
+											<xsl:choose>
+												<xsl:when test="$countryCode = 'US' or $countryCode = 'AU' or $countryCode = 'CA'">
+													<xsl:choose>
+														<xsl:when test="$fcode = 'ADM1'">
+															<xsl:value-of select="$name"/>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="$name"/>
+															<xsl:text> (</xsl:text>
+															<xsl:value-of select="numishare:get-region($countryCode, $adminName1)"/>
+															<xsl:text>)</xsl:text>
+														</xsl:otherwise>
+													</xsl:choose>
+												</xsl:when>
+												<xsl:when test="$countryCode='GB'">
+													<xsl:choose>
+														<xsl:when test="$fcode = 'ADM1'">
+															<xsl:value-of select="$name"/>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="concat($name, ' (', $adminName1, ')')"/>
+														</xsl:otherwise>
+													</xsl:choose>
+												</xsl:when>
+												<xsl:when test="$fcode='PCLI'">
+													<xsl:value-of select="$name"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="concat($name, ' (', $countryName, ')')"/>
+												</xsl:otherwise>
+											</xsl:choose>
+											
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$mint"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</geogname>
+							</xsl:for-each>
+							<xsl:for-each select="distinct-values(descendant::geogname[@role='region']/text())">
+								<geogname role="region">
+									<xsl:value-of select="normalize-space(.)"/>
+								</geogname>
+							</xsl:for-each>
+						</geographic>
 					</xsl:if>
 					<xsl:if test="descendant::physfacet[contains(@type, 'obverse')] or count(descendant::persname[not(@role='deity')]) &gt; 0">
 						<obverse>
@@ -352,91 +436,6 @@
 				</citation>
 			</xsl:for-each>
 		</refDesc>
-	</xsl:template>
-
-	<xsl:template match="geogname[@role='city']">
-		<xsl:variable name="mint" select="normalize-space(.)"/>
-		<xsl:variable name="states">
-			<xsl:for-each select="//geogname[@role='state']">
-				<xsl:value-of select="."/>
-				<xsl:if test="not(position()=last())">
-					<xsl:text>|</xsl:text>
-				</xsl:if>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:variable name="spreadsheet">
-			<xsl:text>https://spreadsheets.google.com/feeds/list/0Avp6BVZhfwHAdHQ5UE01dDAxOWFsWjJ2UGtiMmRCSnc/od6/public/values</xsl:text>
-		</xsl:variable>
-		<xsl:variable name="uri">
-			<xsl:choose>
-				<xsl:when test="count(document(concat($spreadsheet, '?sq=mint%3d%22', encode-for-uri($mint), '%22'))//atom:entry) = 1">
-					<xsl:value-of select="document(concat($spreadsheet, '?sq=mint%3d%22', encode-for-uri($mint), '%22'))//atom:entry/gsx:uri"/>
-				</xsl:when>
-				<xsl:when test="count(document(concat($spreadsheet, '?sq=mint%3d%22', encode-for-uri($mint), '%22'))//atom:entry) &gt; 1">
-					<xsl:for-each select="document(concat($spreadsheet, '?sq=mint%3d%22', encode-for-uri($mint), '%22'))//atom:entry[contains($states, gsx:state)]">
-						<xsl:value-of select="gsx:uri"/>
-					</xsl:for-each>
-				</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
-		<geogname role="mint">
-			<xsl:choose>
-				<xsl:when test="string($uri)">
-					<xsl:attribute name="rdf:resource" select="$uri"/>
-
-					<xsl:variable name="geonameId" select="substring-before(substring-after($uri, 'geonames.org/'), '/')"/>
-					<xsl:variable name="geonames_data" select="document(concat($geonames-url, '/get?geonameId=', $geonameId, '&amp;username=anscoins&amp;style=full'))"/>
-
-					<!-- get place name-->
-					<xsl:variable name="countryCode" select="exsl:node-set($geonames_data)/geoname/countryCode"/>
-					<xsl:variable name="countryName" select="exsl:node-set($geonames_data)/geoname/countryName"/>
-					<xsl:variable name="name" select="exsl:node-set($geonames_data)/geoname/name"/>
-					<xsl:variable name="adminName1" select="exsl:node-set($geonames_data)/geoname/adminName1"/>
-					<xsl:variable name="fcode" select="exsl:node-set($geonames_data)/geoname/fcode"/>
-
-
-					<xsl:choose>
-						<xsl:when test="$countryCode = 'US' or $countryCode = 'AU' or $countryCode = 'CA'">
-							<xsl:choose>
-								<xsl:when test="$fcode = 'ADM1'">
-									<xsl:value-of select="$name"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="$name"/>
-									<xsl:text> (</xsl:text>
-									<xsl:value-of select="numishare:get-region($countryCode, $adminName1)"/>
-									<xsl:text>)</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:when test="$countryCode='GB'">
-							<xsl:choose>
-								<xsl:when test="$fcode = 'ADM1'">
-									<xsl:value-of select="$name"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="concat($name, ' (', $adminName1, ')')"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:when test="$fcode='PCLI'">
-							<xsl:value-of select="$name"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="concat($name, ' (', $countryName, ')')"/>
-						</xsl:otherwise>
-					</xsl:choose>
-
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$mint"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</geogname>
-	</xsl:template>
-
-	<xsl:template match="geogname[@role='region']">
-		<xsl:copy-of select="."/>
 	</xsl:template>
 
 	<xsl:template name="mint_name">
