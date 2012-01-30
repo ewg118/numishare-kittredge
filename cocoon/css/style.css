@@ -72,8 +72,11 @@ html {
 	border:2px solid #b76e0e;
 }
 dt {
-	width:125px;
+	width:100px;
 	float:left;
+}
+.section{
+	margin-bottom:50px;	
 }
 /*
   ***************************************
