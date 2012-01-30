@@ -922,7 +922,17 @@
 					<img src="{$display_path}images/atom.png" title="Atom" alt="Atom"/>
 				</a>
 			</div>
-			<div class="icon">AddThis could go here...</div>
+			<div class="icon">
+				<!-- AddThis Button BEGIN -->
+				<a href="http://www.addthis.com/bookmark.php?v=250&amp;pub=xa-4a6926fd3dde83e2"
+					onmouseover="return addthis_open(this, '', '[URL]', '[TITLE]')"
+					onmouseout="addthis_close()" onclick="return addthis_sendto()">
+					<img src="http://s7.addthis.com/static/btn/lg-bookmark-en.gif" width="125"
+						height="16" alt="Bookmark and Share" style="border:0"/>
+				</a>
+				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js?pub=xa-4a6926fd3dde83e2"/>
+				<!-- AddThis Button END -->
+			</div>
 		</div>
 	</xsl:template>
 
