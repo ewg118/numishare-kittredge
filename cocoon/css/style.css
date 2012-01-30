@@ -78,6 +78,15 @@ dt {
 .section{
 	margin-bottom:50px;	
 }
+a:link {
+        color:#44573a;
+}
+a:visited {
+        color:#959595;
+}
+a:hover, a:active {
+        color:#2b2b2b;
+}
 /*
   ***************************************
   HEADER
