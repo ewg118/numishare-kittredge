@@ -978,6 +978,7 @@
 			<xsl:when test="$name='objectType'">Object Type</xsl:when>
 			<xsl:when test="$name='obverse'">Obverse</xsl:when>
 			<xsl:when test="$name='owner'">Owner</xsl:when>
+			<xsl:when test="$name='reference'">Reference</xsl:when>
 			<xsl:when test="$name='repository'">Repository</xsl:when>
 			<xsl:when test="$name='reverse'">Reverse</xsl:when>
 			<xsl:when test="$name='saleCatalog'">Sale Catalog</xsl:when>
@@ -986,6 +987,7 @@
 			<xsl:when test="$name='shape'">Shape</xsl:when>
 			<xsl:when test="$name='symbol'">Symbol</xsl:when>
 			<xsl:when test="$name='testmark'">Test Mark</xsl:when>
+			<xsl:when test="$name='title'">Title</xsl:when>
 			<xsl:when test="$name='type'">Type</xsl:when>
 			<xsl:when test="$name='thickness'">Thickness</xsl:when>
 			<xsl:when test="$name='wear'">Wear</xsl:when>
