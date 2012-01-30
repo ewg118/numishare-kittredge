@@ -111,6 +111,12 @@ a:hover, a:active {
 	font-weight:bold;
 	letter-spacing:4px;
 }
+.ui-menubar-link {
+	color:black;
+}
+.ui-menubar-link:visited {
+	color:black;
+}
 /*
   ***************************************
   FOOTER
