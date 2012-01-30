@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs numishare" version="2.0">
 	<xsl:include href="../search_segments.xsl"/>
 	<xsl:include href="../results_generic.xsl"/>
 	<xsl:param name="display_path">
@@ -42,9 +42,7 @@
 	<xsl:template match="doc" mode="map">
 		<xsl:variable name="sort_category" select="substring-before($sort, ' ')"/>
 		<xsl:variable name="regularized_sort">
-			<xsl:call-template name="normalize_fields">
-				<xsl:with-param name="field" select="$sort_category"/>
-			</xsl:call-template>
+			<xsl:value-of select="numishare:normalize_fields($sort_category)"/>
 		</xsl:variable>
 
 		<div class="g_doc">

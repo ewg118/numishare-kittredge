@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes=" numishare xs" version="2.0">
 	<xsl:include href="../search_segments.xsl"/>
 	<xsl:param name="q"/>
 	<xsl:param name="start"/>
@@ -26,9 +26,7 @@
 						<option value="{@name}" selected="selected">
 							<xsl:choose>
 								<xsl:when test="$category = 'century_num'">
-									<xsl:call-template name="regularize_century">
-										<xsl:with-param name="term" select="@name"/>
-									</xsl:call-template>
+									<xsl:value-of select="numishare:normalize_century(@name)"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="@name"/>
@@ -40,9 +38,7 @@
 						<option value="{@name}">
 							<xsl:choose>
 								<xsl:when test="$category = 'century_num'">
-									<xsl:call-template name="regularize_century">
-										<xsl:with-param name="term" select="@name"/>										
-									</xsl:call-template>									
+									<xsl:value-of select="numishare:normalize_century(@name)"/>									
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="@name"/>									

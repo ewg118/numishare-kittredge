@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 	<xsl:include href="../search_segments.xsl"/>
 	<xsl:param name="q"/>
 	<xsl:param name="start"/>
@@ -69,9 +69,7 @@
 							<xsl:choose>
 								<xsl:when test="$facet = 'century_num'">
 									<div class="fn">
-										<xsl:call-template name="regularize_century">
-											<xsl:with-param name="term" select="@name"/>
-										</xsl:call-template>
+										<xsl:value-of select="numishare:normalize_century(@name)"/>
 									</div>
 								</xsl:when>
 								<xsl:otherwise>
@@ -92,9 +90,7 @@
 								<xsl:when test="$facet = 'century_num'">
 									<div class="fn">
 										<span href="?q={$facet}:&#x022;{@name}&#x022;">
-											<xsl:call-template name="regularize_century">
-												<xsl:with-param name="term" select="@name"/>
-											</xsl:call-template>
+											<xsl:value-of select="numishare:normalize_century(@name)"/>
 										</span>
 									</div>
 								</xsl:when>

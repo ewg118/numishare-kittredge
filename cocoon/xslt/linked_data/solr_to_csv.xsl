@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs exsl" version="2.0" xmlns="http://www.w3.org/2005/Atom" xmlns:exsl="http://exslt.org/common">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs exsl numishare" version="2.0" xmlns="http://www.w3.org/2005/Atom" xmlns:exsl="http://exslt.org/common">
 	<xsl:output method="text" encoding="UTF-8"/>
 
 	<xsl:include href="../search_segments.xsl"/>
@@ -29,9 +29,7 @@
 		<!-- display human-readable field names in header row -->
 		<xsl:for-each select="$tokenized_fields">
 			<xsl:text>"</xsl:text>
-			<xsl:call-template name="normalize_fields">
-				<xsl:with-param name="field" select="."/>
-			</xsl:call-template>
+			<xsl:value-of select="numishare:normalize_fields(.)"/>
 			<xsl:text>"</xsl:text>
 			<xsl:text>,</xsl:text>			
 		</xsl:for-each>

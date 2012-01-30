@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	exclude-result-prefixes="numishare xs" version="2.0">
 	<xsl:include href="../search_segments.xsl"/>
 	<xsl:param name="q"/>
 	<xsl:param name="tokenized_q" select="tokenize($q, ' AND ')"/>
@@ -25,9 +26,7 @@
 				<xsl:when test="contains(., ':') and not(. = '*:*') and not(contains(., '('))">
 					<xsl:variable name="field" select="substring-before(., ':')"/>
 					<xsl:variable name="name">
-						<xsl:call-template name="normalize_fields">
-							<xsl:with-param name="field" select="$field"/>
-						</xsl:call-template>
+						<xsl:value-of select="numishare:normalize_fields($field)"/>
 					</xsl:variable>
 					<xsl:variable name="term" select="replace(substring-after(., ':'), '&#x022;', '')"/>
 
@@ -36,9 +35,7 @@
 							<b><xsl:value-of select="$name"/>: </b>
 							<xsl:choose>
 								<xsl:when test="$field = 'century_num'">
-									<xsl:call-template name="regularize_century">
-										<xsl:with-param name="term" select="$term"/>
-									</xsl:call-template>
+									<xsl:value-of select="numishare:normalize_century(@name)"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="$term"/>
@@ -55,9 +52,7 @@
 					<xsl:variable name="tokenized-fragments" select="tokenize(substring-after(substring-before(., ')'), '('), ' OR ')"/>
 					<xsl:variable name="field" select="substring-before($tokenized-fragments[1], ':')"/>
 					<xsl:variable name="name">
-						<xsl:call-template name="normalize_fields">
-							<xsl:with-param name="field" select="$field"/>
-						</xsl:call-template>
+						<xsl:value-of select="numishare:normalize_fields($field)"/>
 					</xsl:variable>
 					<div class="ui-widget ui-state-default ui-corner-all stacked_term">
 						<span>
