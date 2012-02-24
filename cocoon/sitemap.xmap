@@ -146,7 +146,7 @@
 
 			<map:match pattern="">
 				<map:generate src="{global:exist-url}{global:collection-name}/config.xml" label="record"/>
-				<map:transform src="xslt/layout.xsl" label="basiccontent" type="xslt-saxon">
+				<map:transform src="xslt/index.xsl" label="basiccontent" type="xslt-saxon">
 					<map:parameter name="use-request-parameters" value="true"/>
 					<map:parameter name="pipeline" value="index"/>
 				</map:transform>
@@ -156,9 +156,9 @@
 			<!-- pages -->
 			<map:match pattern="pages/*">
 				<map:generate src="{global:exist-url}{global:collection-name}/config.xml" label="record"/>
-				<map:transform src="xslt/layout.xsl" type="xslt-saxon">
-					<map:parameter name="use-request-parameters" value="true"/>	
-					<map:parameter name="pipeline" value="pages"/>					
+				<map:transform src="xslt/pages.xsl" type="xslt-saxon">
+					<map:parameter name="use-request-parameters" value="true"/>
+					<map:parameter name="pipeline" value="pages"/>
 					<map:parameter name="stub" value="{1}"/>
 				</map:transform>
 				<map:serialize type="html"/>
@@ -192,9 +192,13 @@
 				<map:serialize type="xml"/>
 			</map:match>
 			<map:match pattern="display/*.kml">
-				<map:generate src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+id:&#x022;{1}&#x022;&amp;rows=1" label="record"/>
-				<map:transform src="xslt/geographic/solr-to-kml.xsl" label="basiccontent" type="xslt-saxon">
-					<map:parameter name="use-request-parameters" value="true"/>					
+				<map:aggregate element="content">
+					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
+					<map:part src="{global:exist-url}{global:collection-name}/objects/{1}.xml"/>
+				</map:aggregate>
+				<!--<map:generate src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+id:&#x022;{1}&#x022;&amp;rows=1" label="record"/>-->
+				<map:transform src="xslt/geographic/object-to-kml.xsl" label="basiccontent" type="xslt-saxon">
+					<map:parameter name="use-request-parameters" value="true"/>
 				</map:transform>
 				<map:serialize type="kml"/>
 			</map:match>
@@ -210,12 +214,12 @@
 					<map:part src="cocoon:/query_findspot_geo/{1}"/>
 					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
 				</map:aggregate>
-				<map:transform src="xslt/layout.xsl" label="basiccontent" type="xslt-saxon">
-					<map:parameter name="use-request-parameters" value="true"/>					
+				<map:transform src="xslt/display.xsl" label="basiccontent" type="xslt-saxon">
+					<map:parameter name="use-request-parameters" value="true"/>
 					<map:parameter name="solr-url" value="{global:solr-url}"/>
 					<map:parameter name="pipeline" value="display"/>
-				</map:transform>		
-				<map:transform type="cinclude"/>				
+				</map:transform>
+				<map:transform type="cinclude"/>
 				<map:serialize type="html"/>
 			</map:match>
 
@@ -268,7 +272,7 @@
 					<map:part src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:{request-param:q}}&amp;rows=0&amp;facet.limit=1&amp;f.{request-param:category}.facet.limit={request-param:limit}&amp;facet.field=artist_facet&amp;facet.field=authority_facet&amp;facet.field=category_facet&amp;facet.field=collection_facet&amp;facet.field=decoration_facet&amp;facet.field=deity_facet&amp;facet.field=degree_facet&amp;facet.field=denomination_facet&amp;facet.field=department_facet&amp;facet.field=dynasty_facet&amp;facet.field=engraver_facet&amp;facet.field=era_facet&amp;facet.field=findspot_facet&amp;facet.field=grade_facet&amp;facet.field=institution_facet&amp;facet.field=issuer_facet&amp;facet.field=portrait_facet&amp;facet.field=manufacture_facet&amp;facet.field=maker_facet&amp;facet.field=material_facet&amp;facet.field=mint_facet&amp;facet.field=objectType_facet&amp;facet.field=owner_facet&amp;facet.field=region_facet&amp;facet.field=repository_facet&amp;facet.field=script_facet&amp;facet.field=series_facet&amp;facet.field=state_facet&amp;facet.field=subject_facet"/>
 					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
 				</map:aggregate>				
-				<map:transform type="xslt-saxon" src="xslt/layout.xsl" label="basiccontent">
+				<map:transform type="xslt-saxon" src="xslt/visualize.xsl" label="basiccontent">
 					<map:parameter name="use-request-parameters" value="true"/>	
 					<map:parameter name="pipeline" value="visualize"/>					
 				</map:transform>
@@ -278,7 +282,7 @@
 			<!-- produces the search form; needs to be generated as xml and serialized as xhtml -->
 			<map:match pattern="search">
 				<map:generate src="{global:exist-url}{global:collection-name}/config.xml" label="record"/>
-				<map:transform type="xslt-saxon" src="xslt/layout.xsl" label="basiccontent">
+				<map:transform type="xslt-saxon" src="xslt/search.xsl" label="basiccontent">
 					<map:parameter name="use-request-parameters" value="true"/>			
 					<map:parameter name="pipeline" value="search"/>					
 				</map:transform>
@@ -290,7 +294,7 @@
 					<map:part src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:{request-param:q}}&amp;start={request-param:start}&amp;sort={url-encode:{request-param:sort}}&amp;facet.field=artist_facet&amp;facet.field=authority_facet&amp;facet.field=category_facet&amp;facet.field=century_num&amp;facet.field=decoration_facet&amp;facet.field=deity_facet&amp;facet.field=degree_facet&amp;facet.field=denomination_facet&amp;facet.field=department_facet&amp;facet.field=dynasty_facet&amp;facet.field=engraver_facet&amp;facet.field=era_facet&amp;facet.field=findspot_facet&amp;facet.field=grade_facet&amp;facet.field=institution_facet&amp;facet.field=issuer_facet&amp;facet.field=manufacture_facet&amp;facet.field=maker_facet&amp;facet.field=material_facet&amp;facet.field=mint_facet&amp;facet.field=objectType_facet&amp;facet.field=owner_facet&amp;facet.field=portrait_facet&amp;facet.field=region_facet&amp;facet.field=repository_facet&amp;facet.field=script_facet&amp;facet.field=series_facet&amp;facet.field=state_facet&amp;facet.field=subject_facet&amp;facet.field=mint_geo&amp;facet.numFacetTerms=1&amp;section={request-param:section}"/>
 					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
 				</map:aggregate>				
-				<map:transform type="xslt-saxon" src="xslt/layout.xsl" label="basiccontent">
+				<map:transform type="xslt-saxon" src="xslt/results.xsl" label="basiccontent">
 					<map:parameter name="use-request-parameters" value="true"/>	
 					<map:parameter name="pipeline" value="results"/>					
 				</map:transform>
@@ -301,7 +305,7 @@
 			<!-- COMPARE PAGE -->
 			<map:match pattern="compare">				
 				<map:generate src="{global:exist-url}{global:collection-name}/config.xml" label="record"/>
-				<map:transform type="xslt-saxon" src="xslt/layout.xsl" label="basiccontent">
+				<map:transform type="xslt-saxon" src="xslt/compare.xsl" label="basiccontent">
 					<map:parameter name="use-request-parameters" value="true"/>	
 					<map:parameter name="pipeline" value="compare"/>					
 				</map:transform>
@@ -355,7 +359,7 @@
 					<map:part src="{global:solr-url}select?q=collection-name:{global:collection-name}+AND+{url-encode:mint_geo:*}"/>
 					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
 				</map:aggregate>				
-				<map:transform type="xslt-saxon" src="xslt/layout.xsl" label="basiccontent">
+				<map:transform type="xslt-saxon" src="xslt/maps.xsl" label="basiccontent">
 					<map:parameter name="use-request-parameters" value="true"/>	
 					<map:parameter name="pipeline" value="maps"/>					
 				</map:transform>

@@ -2,7 +2,12 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
 	<xsl:output method="xml" encoding="UTF-8"/>
 	<xsl:include href="search_segments.xsl"/>
-
+	<xsl:include href="header.xsl"/>
+	<xsl:include href="footer.xsl"/>
+	
+	<xsl:param name="pipeline"/>
+	<xsl:param name="display_path"/>
+		
 	<xsl:param name="q"/>
 	<xsl:param name="tokenized_q" select="tokenize($q, ' AND ')"/>
 	<xsl:param name="category"/>
@@ -16,6 +21,56 @@
 	<xsl:variable name="category_normalized">
 		<xsl:value-of select="numishare:normalize_fields($category)"/>
 	</xsl:variable>
+	
+	<xsl:template match="/">
+		<html>
+			<head>
+				<title>
+					<xsl:value-of select="//config/title"/>
+					<xsl:text>: Visualize</xsl:text>
+				</title>
+				<link rel="shortcut icon" type="image/x-icon" href="{$display_path}images/favicon.png"/>
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/grids/grids-min.css"/>
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset-fonts-grids/reset-fonts-grids.css"/>
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/base/base-min.css"/>
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/fonts/fonts-min.css"/>
+				<!-- Core + Skin CSS -->
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/menu/assets/skins/sam/menu.css"/>
+				<link type="text/css" href="{$display_path}themes/{//config/theme/jquery_ui_theme}.css" rel="stylesheet"/>
+				<link type="text/css" href="{$display_path}style.css" rel="stylesheet"/>
+				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/jquery-ui-1.8.10.custom.min.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/numishare-menu.js"/>
+				
+				<link type="text/css" href="{$display_path}visualize.css" rel="stylesheet"/>
+				<link type="text/css" href="{$display_path}visualize-light.css" rel="stylesheet"/>
+				<script type="text/javascript" src="{$display_path}javascript/visualize.jQuery.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/excanvas.js"/>
+				<script type="text/javascript">
+					$(document).ready(function() {
+						$('table').visualize({
+							width: 600<xsl:value-of select="if(string($type)) then concat(', type:&#x022;', $type, '&#x022;') else ''"/>
+							<xsl:value-of select="if(string($pieMargin)) then concat(', pieMargin:', $pieMargin) else ''"/>
+							<xsl:value-of select="if(string($lineWeight)) then concat(', lineWeight:', $lineWeight) else ''"/>
+							<xsl:value-of select="if(string($pieLabelPos)) then concat(', pieLabelPos:&#x022;', $pieLabelPos, '&#x022;') else ''"/>
+							<xsl:value-of select="if(string($barMargin)) then concat(', barMargin:', $barMargin) else ''"/>
+							<xsl:value-of select="if(string($barGroupMargin)) then concat(', barGroupMargin:', $barGroupMargin) else ''"/>
+						});
+						//hide table
+						$('table').addClass('accessHide');
+					});
+				</script>
+				<script type="text/javascript" src="javascript/visualize_functions.js"/>
+			</head>
+			<body class="yui-skin-sam">
+				<div id="doc4" class="{//config/theme/layouts/*[name()=$pipeline]/yui_class}">
+					<xsl:call-template name="header"/>
+					<xsl:call-template name="visualize"/>
+					<xsl:call-template name="footer"/>
+				</div>
+			</body>
+		</html>
+	</xsl:template>
 
 	<xsl:template name="visualize">
 		<div id="bd">
