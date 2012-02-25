@@ -180,12 +180,12 @@
 							<xsl:with-param name="typeDesc_resource" select="$nuds:typeDesc_resource"/>
 						</xsl:apply-templates>
 					</div>
-					<xsl:if test="descMeta/undertypeDesc">
+					<xsl:if test="nuds:descMeta/nuds:undertypeDesc">
 						<div class="metadata_section">
 							<xsl:apply-templates select="nuds:descMeta/nuds:undertypeDesc"/>
 						</div>
 					</xsl:if>
-					<xsl:if test="descMeta/refDesc">
+					<xsl:if test="nuds:descMeta/nuds:refDesc">
 						<div class="metadata_section">
 							<xsl:apply-templates select="nuds:descMeta/nuds:refDesc"/>
 						</div>
@@ -195,7 +195,7 @@
 							<xsl:apply-templates select="descMeta/findspotDesc"/>
 						</div>
 					</xsl:if>-->
-					<xsl:if test="descMeta/adminDesc/*">
+					<xsl:if test="nuds:descMeta/nuds:adminDesc/*">
 						<div class="metadata_section">
 							<xsl:apply-templates select="nuds:descMeta/nuds:adminDesc"/>
 						</div>
