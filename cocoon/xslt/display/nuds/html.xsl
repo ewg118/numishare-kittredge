@@ -218,12 +218,12 @@
 								<a href="#charts">Quantitative</a>
 							</li>
 						</xsl:if>
-						<xsl:if test="descMeta/adminDesc/*">
+						<xsl:if test="nuds:descMeta/nuds:adminDesc/*">
 							<li>
 								<a href="#administrative">Administrative</a>
 							</li>
 						</xsl:if>
-						<xsl:if test="description">
+						<xsl:if test="nuds:description">
 							<li>
 								<a href="#commentary">Commentary</a>
 							</li>
@@ -238,7 +238,7 @@
 						</xsl:if>
 						<!-- process $nuds:typeDesc differently -->
 						<div class="metadata_section">
-							<xsl:apply-templates select="exsl:node-set($nuds:typeDesc)/*[local-name()='typeDesc']">
+							<xsl:apply-templates select="exsl:node-set($nuds:typeDesc)/nuds:typeDesc">
 								<xsl:with-param name="typeDesc_resource" select="$nuds:typeDesc_resource"/>
 							</xsl:apply-templates>
 						</div>
