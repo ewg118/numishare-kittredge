@@ -43,6 +43,11 @@
 				<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false"/>
 				<script type="text/javascript" src="{$display_path}javascript/maps_get_facets.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/map_functions.js"/>
+				<xsl:if test="string(/config/google_analytics/script)">
+					<script type="text/javascript">
+						<xsl:value-of select="/config/google_analytics/script"/>
+					</script>
+				</xsl:if>
 			</head>
 			<body class="yui-skin-sam">
 				<div id="doc4" class="{//config/theme/layouts/*[name()=$pipeline]/yui_class}">

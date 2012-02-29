@@ -4,13 +4,13 @@
 	<xsl:include href="footer.xsl"/>
 
 	<xsl:param name="pipeline"/>
-	<xsl:param name="display_path"/>	
+	<xsl:param name="display_path"/>
 
 	<xsl:template match="/">
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="//config/title"/>				
+					<xsl:value-of select="//config/title"/>
 				</title>
 				<link rel="shortcut icon" type="image/x-icon" href="{$display_path}images/favicon.png"/>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/grids/grids-min.css"/>
@@ -28,6 +28,11 @@
 				<!-- index script -->
 				<script type="text/javascript" src="{$display_path}javascript/quick_search.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/get_features.js"/>
+				<xsl:if test="string(/config/google_analytics/script)">
+					<script type="text/javascript">
+						<xsl:value-of select="/config/google_analytics/script"/>
+					</script>
+				</xsl:if>
 			</head>
 			<body class="yui-skin-sam">
 				<div id="doc4" class="{//config/theme/layouts/*[name()=$pipeline]/yui_class}">

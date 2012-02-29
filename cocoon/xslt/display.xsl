@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?cocoon-disable-caching?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:nuds="http://nomisma.org/nuds" xmlns:cinclude="http://apache.org/cocoon/include/1.0" exclude-result-prefixes="nuds cinclude" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:nuds="http://nomisma.org/nuds" xmlns:cinclude="http://apache.org/cocoon/include/1.0" exclude-result-prefixes="nuds cinclude"
+	version="2.0">
 	<xsl:include href="header.xsl"/>
 	<xsl:include href="footer.xsl"/>
 	<xsl:include href="display/nuds/html.xsl"/>
@@ -24,7 +25,7 @@
 			<xsl:text>../</xsl:text>
 		</xsl:if>
 	</xsl:param>
-	
+
 	<xsl:variable name="id" select="normalize-space(//nuds:nudsid)"/>
 
 	<xsl:template match="/">
@@ -35,7 +36,9 @@
 						<title>
 							<xsl:value-of select="//config/title"/>
 							<xsl:text>: </xsl:text>
-							<xsl:value-of select="if (descendant::nuds:nuds) then descendant::nuds:nuds/nuds:descMeta/nuds:title else if (descendant::*[local-name()='nudsHoard']) then descendant::nuds:nudsid else ''"/>
+							<xsl:value-of
+								select="if (descendant::nuds:nuds) then descendant::nuds:nuds/nuds:descMeta/nuds:title else if (descendant::*[local-name()='nudsHoard']) then descendant::nuds:nudsid else ''"
+							/>
 						</title>
 						<link rel="shortcut icon" type="image/x-icon" href="{$display_path}images/favicon.png"/>
 						<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/grids/grids-min.css"/>
@@ -57,6 +60,11 @@
 							<script type="text/javascript" src="{$display_path}javascript/visualize.jQuery.js"/>
 							<script type="text/javascript" src="{$display_path}javascript/excanvas.js"/>
 							<script type="text/javascript" src="{$display_path}javascript/display_functions.js"/>
+						</xsl:if>
+						<xsl:if test="string(/config/google_analytics/script)">
+							<script type="text/javascript">
+								<xsl:value-of select="/config/google_analytics/script"/>
+							</script>
 						</xsl:if>
 					</head>
 					<body class="yui-skin-sam">
