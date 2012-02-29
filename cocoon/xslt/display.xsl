@@ -63,7 +63,7 @@
 						</xsl:if>
 						<xsl:if test="string(/config/google_analytics/script)">
 							<script type="text/javascript">
-								<xsl:value-of select="/config/google_analytics/script"/>
+								<xsl:value-of select="//config/google_analytics/script"/>
 							</script>
 						</xsl:if>
 					</head>
