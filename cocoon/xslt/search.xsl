@@ -46,30 +46,7 @@
 	<xsl:template name="search">
 		<div id="bd">
 			<h1>Search</h1>
-			<p>This page allows you to search the entire database for specific terms or keywords. It also allows you to finds specific objects through their unique ANS 'accession
-				number. <a href="#instructions" id="show_instructions">Show search instructions.</a></p>
-			<div style="display:none">
-				<div id="instructions">
-					<h1>Search Instructions</h1>
-					<h2>Accession Number</h2>
-					<p>If you know the ANS’ unique accession number for the object select ‘Accession number’ on the drop-down menu above and enter the accession number in the
-						following format: http://code.google.com/p/numishare/.nnn.nnn.</p>
-					
-					<h2>Free Text Searching</h2>
-					<p>To conduct a free text search select ‘Keyword’ on the drop-down menu above and enter the text for which you wish to search.</p>
-					
-					<h2>Other Searches</h2>
-					<p>The drop down menu also allows basic searches on other categories of information. Searches across multiple categories may be
-						carried out by clicking ‘add’ to the right of the search field. However, if you wish to search for multiple terms or under multiple categories of
-						information, we strongly recommend using the faceted search facility for the whole collection or for individual Departments. To conduct a faceted search
-						across the whole collection, click ‘Browse’ on the tool bar above. To conduct a faceted search by Department click ‘Collections Home’ on the tool bar
-						above</p>
-					<p>The search allows wildcard searches with the * and ? characters and exact string matches by surrounding phrases by double quotes (like Google).</p>
-					<p>Example: A search for <i>1944.*</i> will yield all coins accessioned in 1944. <a
-						href="http://lucene.apache.org/java/2_9_1/queryparsersyntax.html#Term%20Modifiers" target="_blank">See the Lucene query syntax</a> documenation for more
-						information.</p>
-				</div>
-			</div>
+			<p>This page allows you to search the entire database for specific terms or keywords.</p>
 			<xsl:call-template name="search_forms"/>
 		</div> 
 	</xsl:template>
