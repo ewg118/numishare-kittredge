@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?cocoon-disable-caching?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="#all" version="2.0">
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" media-type="text/html"/>
 	<xsl:include href="search_segments.xsl"/>
 	<xsl:include href="header.xsl"/>
@@ -34,6 +34,11 @@
 				<script type="text/javascript" src="{$display_path}javascript/compare.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/compare_functions.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/numishare-menu.js"/>
+				<xsl:if test="string(/config/google_analytics/script)">
+					<script type="text/javascript">
+						<xsl:value-of select="//config/google_analytics/script"/>
+					</script>
+				</xsl:if>
 			</head>
 			<body class="yui-skin-sam">
 				<div id="doc4" class="{//config/theme/layouts/*[name()=$pipeline]/yui_class}">

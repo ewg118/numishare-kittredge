@@ -32,6 +32,11 @@
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/jquery-ui-1.8.10.custom.min.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/numishare-menu.js"/>
+				<xsl:if test="string(/config/google_analytics/script)">
+					<script type="text/javascript">
+						<xsl:value-of select="//config/google_analytics/script"/>
+					</script>
+				</xsl:if>
 			</head>
 			<body class="yui-skin-sam">
 				<div id="doc4" class="{//config/theme/layouts/*[name()=$pipeline]/yui_class}">
