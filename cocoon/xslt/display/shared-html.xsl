@@ -5,9 +5,8 @@
 	specific stylesheets
 	Modification date: Febrary 2012
 -->
-<xsl:stylesheet xmlns:nuds="http://nomisma.org/nuds" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:xlink="http://www.w3.org/1999/xlink"
-	exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet xmlns:nuds="http://nomisma.org/nuds" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="#all" version="2.0">
 
 	<!--***************************************** ELEMENT TEMPLATES **************************************** -->
 	<xsl:template match="nuds:refDesc">
@@ -16,15 +15,15 @@
 			<xsl:apply-templates mode="descMeta"/>
 		</ul>
 	</xsl:template>
-	
+
 	<xsl:template match="nuds:physDesc[child::*]">
 		<h2>Physical Attributes</h2>
 		<ul>
 			<xsl:apply-templates mode="descMeta"/>
 		</ul>
 	</xsl:template>
-	
-	<xsl:template match="nuds:typeDesc">		
+
+	<xsl:template match="nuds:typeDesc">
 		<xsl:param name="typeDesc_resource"/>
 		<h2>Typological Attributes</h2>
 		<xsl:if test="string($typeDesc_resource)">
@@ -34,16 +33,16 @@
 			<xsl:apply-templates mode="descMeta"/>
 		</ul>
 	</xsl:template>
-	
+
 	<xsl:template match="*" mode="descMeta">
 		<xsl:variable name="facets">
 			<xsl:text>artist,authority,category,collection,decoration,deity,degree,denomination,department,dynasty,engraver,era,findspot,grade,institution,issuer,portrait,manufacture,maker,material,mint,objectType,owner,region,repository,script,state,subject</xsl:text>
 		</xsl:variable>
-		
+
 		<xsl:choose>
 			<xsl:when test="not(child::*)">
 				<xsl:variable name="href" select="@xlink:href"/>
-				
+
 				<!-- the facet field is the @xlink:role if it exists, otherwise it is the name of the nuds element -->
 				<xsl:variable name="field">
 					<xsl:choose>
@@ -67,9 +66,9 @@
 						</xsl:choose>
 						<xsl:text>: </xsl:text>
 					</b>
-					
+
 					<!-- create link from facet, if applicable -->
-					
+
 					<!-- pull language from nomisma, if available -->
 					<xsl:variable name="value">
 						<xsl:choose>
@@ -89,7 +88,7 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
-					
+
 					<xsl:choose>
 						<xsl:when test="contains($facets, $field)">
 							<a href="{$display_path}results?q={$field}_facet:&#x022;{normalize-space(.)}&#x022;">
@@ -100,28 +99,28 @@
 							<xsl:value-of select="$value"/>
 						</xsl:otherwise>
 					</xsl:choose>
-					
+
 					<!-- display title -->
 					<xsl:if test="string(@title)">
 						<xsl:text> (</xsl:text>
 						<xsl:value-of select="@title"/>
 						<xsl:text>)</xsl:text>
 					</xsl:if>
-					
+
 					<!-- display certainty -->
 					<xsl:if test="string(@certainty)">
 						<xsl:text> (</xsl:text>
 						<xsl:value-of select="@certainty"/>
 						<xsl:text>)</xsl:text>
 					</xsl:if>
-					
+
 					<!-- create links to resources -->
 					<xsl:if test="string($href)">
-						
-						
+
+
 						<a href="{$href}" target="_blank" title="{if (contains($href, 'geonames')) then 'geonames' else if (contains($href, 'nomisma')) then 'nomisma' else ''}">
 							<img src="{$display_path}images/external.png" alt="external link" class="external_link"/>
-							
+
 						</a>
 						<!-- parse nomisma RDFa, create links for pleiades and wikipedia -->
 						<xsl:if test="contains($href, 'nomisma.org')">
@@ -137,9 +136,9 @@
 										</xsl:when>
 									</xsl:choose>
 								</xsl:variable>
-								
+
 								<a href="{@rdf:resource}" target="_blank" title="{$source}">
-									<img src="{$display_path}images/{$source}.png" alt="{$source}" class="external_link"/>									
+									<img src="{$display_path}images/{$source}.png" alt="{$source}" class="external_link"/>
 								</a>
 							</xsl:for-each>
 						</xsl:if>
@@ -259,7 +258,15 @@
 					<img src="{$display_path}images/atom.png" title="Atom" alt="Atom"/>
 				</a>
 			</div>
-			<div class="icon">AddThis could go here...</div>
+			<div class="icon">
+				<!-- AddThis Button BEGIN -->
+				<a href="http://www.addthis.com/bookmark.php?v=250&amp;pub=xa-4a6926fd3dde83e2" onmouseover="return addthis_open(this, '', '[URL]', '[TITLE]')" onmouseout="addthis_close()"
+					onclick="return addthis_sendto()">
+					<img src="http://s7.addthis.com/static/btn/lg-bookmark-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/>
+				</a>
+				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js?pub=xa-4a6926fd3dde83e2"/>
+				<!-- AddThis Button END -->
+			</div>
 		</div>
 	</xsl:template>
 
@@ -300,7 +307,7 @@
 			<xsl:when test="$name='edge'">Edge</xsl:when>
 			<xsl:when test="$name='era'">Era</xsl:when>
 			<xsl:when test="$name='finder'">Finder</xsl:when>
-			<xsl:when test="$name='findspot'">Findspot</xsl:when>			
+			<xsl:when test="$name='findspot'">Findspot</xsl:when>
 			<xsl:when test="$name='geographic'">Geographic</xsl:when>
 			<xsl:when test="$name='grade'">Grade</xsl:when>
 			<xsl:when test="$name='height'">Height</xsl:when>
