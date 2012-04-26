@@ -32,10 +32,10 @@
 				<script type="text/javascript" src="{$display_path}javascript/jquery.livequery.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/search.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/toggle_search_options.js"/>
-				<xsl:if test="string(/config/google_analytics/script)">
+				<xsl:if test="string(//config/google_analytics/script)">
 					<script type="text/javascript">
-						<xsl:value-of select="//config/google_analytics/script"/>
-					</script>
+								<xsl:value-of select="//config/google_analytics/script"/>
+							</script>
 				</xsl:if>
 			</head>
 			<body class="yui-skin-sam">
