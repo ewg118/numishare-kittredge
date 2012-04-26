@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:exsl="http://exslt.org/common" xmlns:gml="http://www.opengis.net/gml" xmlns:skos="http://www.w3.org/2008/05/skos#"
-	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:nuds="http://nomisma.org/nuds" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:exsl="http://exslt.org/common" xmlns:gml="http://www.opengis.net/gml" xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:nuds="http://nomisma.org/nuds" xmlns:nh="http://nomisma.org/nudsHoard" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	exclude-result-prefixes="xs gml exsl skos rdf xlink nuds" xmlns="http://earth.google.com/kml/2.0" version="2.0">
 
 	<xsl:output method="xml" encoding="UTF-8"/>
@@ -59,11 +59,11 @@
 	</xsl:template>
 
 	<xsl:template name="nudsHoard">
-		<xsl:apply-templates select="/content/nudsHoard"/>
+		<xsl:apply-templates select="/content/nh:nudsHoard"/>
 	</xsl:template>
 
-	<xsl:template match="nudsHoard">
-		<xsl:for-each select="descendant::geogname[@xlink:role='findspot'][string(@xlink:href)]">
+	<xsl:template match="nh:nudsHoard">
+		<xsl:for-each select="descendant::nh:geogname[@xlink:role='findspot'][string(@xlink:href)]">
 			<Placemark id="{@xlink:href}">
 				<name>
 					<xsl:value-of select="."/>
@@ -132,7 +132,7 @@
 				</Point>
 			</xsl:when>
 			<xsl:when test="contains($href, 'nomisma')">
-				<xsl:variable name="rdf_url" select="concat('http://nomisma.org/cgi-bin/RDFa.py?uri=', encode-for-uri($href))"/>
+				<xsl:variable name="rdf_url" select="concat('http://www.w3.org/2012/pyRdfa/extract?format=xml&amp;uri=', encode-for-uri($href))"/>
 				<xsl:variable name="nomisma_data" select="document($rdf_url)"/>
 				<xsl:variable name="coordinates" select="exsl:node-set($nomisma_data)//*[local-name()='pos']"/>
 				<!--<description>

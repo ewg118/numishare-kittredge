@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0" xmlns="http://www.w3.org/2005/Atom">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0" xmlns="http://www.w3.org/2005/Atom"
+	xmlns:gml="http://www.opengis.net/gml" xmlns:georss="http://www.georss.org/georss" xmlns:gx="http://www.google.com/kml/ext/2.2">
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
 	<xsl:param name="q"/>
-	<xsl:param name="section"/>	
+	<xsl:param name="section"/>
 	<xsl:param name="rows" as="xs:integer">100</xsl:param>
 	<xsl:param name="start"/>
 	<xsl:variable name="start_var" as="xs:integer">
@@ -75,7 +76,7 @@
 								<xsl:text>, </xsl:text>
 							</xsl:if>
 						</xsl:for-each>
-						
+
 						<xsl:if test="arr[@name='mint_facet']/str[1]">
 							<xsl:text>: </xsl:text>
 							<xsl:value-of select="arr[@name='mint_facet']/str[1]"/>
@@ -86,6 +87,38 @@
 			<updated>
 				<xsl:value-of select="date[@name='timestamp']"/>
 			</updated>
+			<xsl:if test="count(arr[@name='mint_geo']/str) &gt; 0">
+				<georss:where>
+					<xsl:for-each select="arr[@name='mint_geo']/str">
+						<xsl:variable name="tokenized_georef" select="tokenize(., '\|')"/>
+						<xsl:variable name="coordinates" select="$tokenized_georef[3]"/>
+						<xsl:variable name="lon" select="substring-before($coordinates, ',')"/>
+						<xsl:variable name="lat" select="substring-after($coordinates, ',')"/>
+						<gml:Point>
+							<gml:pos>
+								<xsl:value-of select="concat($lat, ' ', $lon)"/>
+							</gml:pos>
+						</gml:Point>
+					</xsl:for-each>
+				</georss:where>
+			</xsl:if>
+			<xsl:if test="count(arr[@name='year_num']/int) &gt; 1">
+				<gx:TimeSpan>
+					<begin>
+						<xsl:value-of select="arr[@name='year_num']/int[1]"/>
+					</begin>
+					<end>
+						<xsl:value-of select="arr[@name='year_num']/int[2]"/>
+					</end>
+				</gx:TimeSpan>
+			</xsl:if>
+			<xsl:if test="count(arr[@name='year_num']/int) = 1">
+				<gx:TimeStamp>
+					<when>
+						<xsl:value-of select="arr[@name='year_num']/int"/>
+					</when>
+				</gx:TimeStamp>
+			</xsl:if>
 		</entry>
 	</xsl:template>
 </xsl:stylesheet>

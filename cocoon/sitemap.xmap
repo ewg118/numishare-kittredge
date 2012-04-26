@@ -103,8 +103,8 @@
 					<map:part src="{global:exist-url}{global:collection-name}/config.xml"/>
 					<map:part src="{global:exist-url}{global:collection-name}/objects/{1}.xml"/>
 				</map:aggregate>
-				<map:transform src="xslt/display/nuds/solr.xsl" type="xslt-saxon">
-					<map:parameter name="use-request-parameters" value="true"/>					
+				<map:transform src="xslt/solr.xsl" type="xslt-saxon">
+					<map:parameter name="use-request-parameters" value="true"/>
 				</map:transform>
 				<map:serialize type="xml"/>
 			</map:match>

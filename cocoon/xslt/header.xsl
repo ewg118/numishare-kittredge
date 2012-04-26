@@ -35,11 +35,14 @@
 						<span class="ui-button-text">Maps</span>
 					</a>
 				</li>
-				<li role="presentation" class="ui-menubar-item">
-					<a aria-haspopup="true" role="menuitem" class="ui-button ui-widget ui-button-text-only ui-menubar-link" tabindex="-1" href="{$display_path}compare">
-						<span class="ui-button-text">Compare</span>
-					</a>
-				</li>
+				<xsl:if test="//config/compare_enabled= true()">
+					<li role="presentation" class="ui-menubar-item">
+						<a aria-haspopup="true" role="menuitem" class="ui-button ui-widget ui-button-text-only ui-menubar-link" tabindex="-1" href="{$display_path}compare">
+							<span class="ui-button-text">Compare</span>
+						</a>
+					</li>
+				</xsl:if>
+				
 				<xsl:for-each select="//config/pages/page[public = '1']">
 					<li role="presentation" class="ui-menubar-item">
 						<a aria-haspopup="true" role="menuitem" class="ui-button ui-widget ui-button-text-only ui-menubar-link" href="{$display_path}pages/{@stub}">

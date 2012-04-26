@@ -97,11 +97,11 @@
 							</dd>
 						</div>
 					</xsl:if>-->
-					<xsl:if test="arr[@name='reference_display']">
+					<xsl:if test="arr[@name='reference_facet']">
 						<div>
 							<dt>Reference(s): </dt>
 							<dd style="margin-left:150px;">
-								<xsl:for-each select="arr[@name='reference_display']/str">
+								<xsl:for-each select="arr[@name='reference_facet']/str">
 									<xsl:value-of select="."/>
 									<xsl:if test="not(position() = last())">
 										<xsl:text>, </xsl:text>
@@ -150,7 +150,7 @@
 									</dd>
 								</div>
 							</xsl:when>
-							<xsl:when test="contains($sort, '_facet') or contains($sort, 'reference_display') or contains($sort, 'prevcoll_display')">
+							<xsl:when test="contains($sort, '_facet') or contains($sort, 'reference_facet') or contains($sort, 'prevcoll_display')">
 								<div>
 									<xsl:choose>
 										<xsl:when test="matches($sort, 'objectType_facet')">
@@ -390,8 +390,10 @@
 							</xsl:for-each>
 						</div>
 					</xsl:if>
-					<br/>
-					<xsl:value-of select="concat($count, if($count = 1) then ' associated coin' else ' associated coins')"/>
+					<xsl:if test="$count &gt; 0">
+						<br/>
+						<xsl:value-of select="concat($count, if($count = 1) then ' associated coin' else ' associated coins')"/>
+					</xsl:if>
 				</xsl:when>
 			</xsl:choose>
 		</td>
@@ -891,7 +893,7 @@
 
 	<xsl:template name="sort">
 		<xsl:variable name="sort_categories_string">
-			<xsl:text>identifier_display,authority_facet,century_num,color_display,dob_num,timestamp,degree_facet,deity_facet,denomination_facet,department_facet,diameter_num,dynasty_facet,findspot_facet,issuer_facet,manufacture_facet,material_facet,mint_facet,obv_leg_display,objectType_facet,portrait_facet,prevcoll_display,reference_display,region_facet,rev_leg_display,weight_num,year_num</xsl:text>
+			<xsl:text>identifier_display,authority_facet,century_num,color_display,dob_num,timestamp,degree_facet,deity_facet,denomination_facet,department_facet,diameter_num,dynasty_facet,findspot_facet,issuer_facet,manufacture_facet,material_facet,mint_facet,obv_leg_display,portrait_facet,prevcoll_display,reference_facet,region_facet,rev_leg_display,weight_num,year_num</xsl:text>
 		</xsl:variable>
 		<xsl:variable name="sort_categories" select="tokenize(normalize-space($sort_categories_string), ',')"/>
 

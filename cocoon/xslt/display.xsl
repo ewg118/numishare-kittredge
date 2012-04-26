@@ -6,7 +6,7 @@
 	<xsl:include href="footer.xsl"/>
 	<xsl:include href="display/nuds/html.xsl"/>
 	<xsl:include href="display/nudsHoard/html.xsl"/>
-	<xsl:include href="display/shared.xsl"/>
+	<xsl:include href="display/shared-html.xsl"/>
 
 	<xsl:param name="pipeline"/>
 	<xsl:param name="solr-url"/>
@@ -25,8 +25,10 @@
 			<xsl:text>../</xsl:text>
 		</xsl:if>
 	</xsl:param>
+	
+	<xsl:param name="lang"/>
 
-	<xsl:variable name="id" select="normalize-space(//nuds:nudsid)"/>
+	<xsl:variable name="id" select="normalize-space(//*[local-name()='nudsid'])"/>
 
 	<xsl:template match="/">
 		<xsl:choose>
@@ -89,7 +91,7 @@
 					<xsl:when test="count(/content/*[local-name()='nuds']) &gt; 0">
 						<xsl:call-template name="nuds"/>
 					</xsl:when>
-					<xsl:otherwise> false </xsl:otherwise>
+					<xsl:otherwise>false</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>

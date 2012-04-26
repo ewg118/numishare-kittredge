@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?cocoon-disable-caching?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mets="http://www.loc.gov/METS/"
-	xmlns:exsl="http://exslt.org/common" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:skos="http://www.w3.org/2008/05/skos#" xmlns:cinclude="http://apache.org/cocoon/include/1.0"
+	xmlns:exsl="http://exslt.org/common" xmlns:numishare="http://code.google.com/p/numishare/" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:cinclude="http://apache.org/cocoon/include/1.0"
 	xmlns:nuds="http://nomisma.org/nuds" exclude-result-prefixes="xs xlink mets exsl numishare xsl skos xlink cinclude" version="2.0">
 
 	<xsl:param name="q"/>
@@ -174,9 +174,8 @@
 						</div>
 					</xsl:if>
 					<!-- process $nuds:typeDesc differently -->
-					<div class="metadata_section">
-						<h3>Typological Attributes</h3>
-						<xsl:apply-templates select="exsl:node-set($nuds:typeDesc)/*[local-name()='typeDesc']">
+					<div class="metadata_section">						
+						<xsl:apply-templates select="exsl:node-set($nuds:typeDesc)/nuds:typeDesc">
 							<xsl:with-param name="typeDesc_resource" select="$nuds:typeDesc_resource"/>
 						</xsl:apply-templates>
 					</div>
@@ -195,7 +194,7 @@
 							<xsl:apply-templates select="descMeta/findspotDesc"/>
 						</div>
 					</xsl:if>-->
-					<xsl:if test="nuds:descMeta/nuds:adminDesc/*">
+					<xsl:if test="nuds:nuds:descMeta/nuds:nuds:adminDesc/*">
 						<div class="metadata_section">
 							<xsl:apply-templates select="nuds:descMeta/nuds:adminDesc"/>
 						</div>
@@ -238,7 +237,7 @@
 						</xsl:if>
 						<!-- process $nuds:typeDesc differently -->
 						<div class="metadata_section">
-							<xsl:apply-templates select="exsl:node-set($nuds:typeDesc)/nuds:typeDesc">
+							<xsl:apply-templates select="exsl:node-set($nuds:typeDesc)/*[local-name()='typeDesc']">
 								<xsl:with-param name="typeDesc_resource" select="$nuds:typeDesc_resource"/>
 							</xsl:apply-templates>
 						</div>
@@ -353,7 +352,7 @@
 								</a>
 							</xsl:when>
 							<xsl:when test="contains(exsl:node-set($object)/nuds:digRep/mets:fileSec/mets:fileGrp[@USE='obverse']/mets:file[@USE='reference']/mets:FLocat/@xlink:href, 'http://')">
-								<a href="{exsl:node-set($object)/digRep/mets:fileSec/mets:fileGrp[@USE='obverse']/mets:file[@USE='reference']/mets:FLocat/@xlink:href}" class="thumbImage">
+								<a href="{exsl:node-set($object)/nuds:digRep/mets:fileSec/mets:fileGrp[@USE='obverse']/mets:file[@USE='reference']/mets:FLocat/@xlink:href}" class="thumbImage">
 									<img class="gi" src="{exsl:node-set($object)/nuds:digRep/mets:fileSec/mets:fileGrp[@USE='obverse']/mets:file[@USE='thumbnail']/mets:FLocat/@xlink:href}"/>
 								</a>
 							</xsl:when>
@@ -379,7 +378,7 @@
 								</a>
 							</xsl:when>
 							<xsl:when test="contains(exsl:node-set($object)/nuds:digRep/mets:fileSec/mets:fileGrp[@USE='reverse']/mets:file[@USE='reference']/mets:FLocat/@xlink:href, 'http://')">
-								<a href="{exsl:node-set($object)/digRep/mets:fileSec/mets:fileGrp[@USE='reverse']/mets:file[@USE='reference']/mets:FLocat/@xlink:href}" class="thumbImage">
+								<a href="{exsl:node-set($object)/nuds:digRep/mets:fileSec/mets:fileGrp[@USE='reverse']/mets:file[@USE='reference']/mets:FLocat/@xlink:href}" class="thumbImage">
 									<img class="gi" src="{exsl:node-set($object)/nuds:digRep/mets:fileSec/mets:fileGrp[@USE='reverse']/mets:file[@USE='thumbnail']/mets:FLocat/@xlink:href}"/>
 								</a>
 							</xsl:when>
@@ -396,15 +395,15 @@
 				</div>
 			</xsl:if>
 			<dl>
-				<xsl:if test="exsl:node-set($object)/nuds:descMeta/nuds:adminDesc/nuds:repository">
+				<xsl:if test="exsl:node-set($object)/nuds:nudsHeader/nuds:publicationStmt/nuds:publisher">
 					<div>
-						<dt>Repository: </dt>
+						<dt>Publisher: </dt>
 						<dd style="margin-left:125px;">
-							<xsl:value-of select="exsl:node-set($object)/nuds:descMeta/nuds:adminDesc/nuds:repository"/>
+							<xsl:value-of select="exsl:node-set($object)/nuds:nudsHeader/nuds:publicationStmt/nuds:publisher"/>
 						</dd>
 					</div>
 				</xsl:if>
-				<xsl:if test="exsl:node-set($object)/nuds:descMeta/nuds:descMeta/nuds:adminDesc/nuds:owner">
+				<!--<xsl:if test="exsl:node-set($object)/nuds:descMeta/nuds:descMeta/nuds:adminDesc/nuds:owner">
 					<div>
 						<dt>Owner: </dt>
 						<dd style="margin-left:125px;">
@@ -416,7 +415,7 @@
 							</xsl:for-each>
 						</dd>
 					</div>
-				</xsl:if>
+				</xsl:if>-->
 				<xsl:if test="exsl:node-set($object)/nuds:descMeta/nuds:physDesc/nuds:axis">
 					<div>
 						<dt>Axis: </dt>
@@ -441,7 +440,7 @@
 						</dd>
 					</div>
 				</xsl:if>
-				<xsl:if test="exsl:node-set($object)/nuds:descMeta/nuds:refDesc/nuds:reference">
+				<!--<xsl:if test="exsl:node-set($object)/nuds:descMeta/nuds:refDesc/nuds:reference">
 					<div>
 						<dt>Reference(s): </dt>
 						<dd style="margin-left:125px;">
@@ -453,7 +452,7 @@
 							</xsl:for-each>
 						</dd>
 					</div>
-				</xsl:if>
+				</xsl:if>-->
 			</dl>
 		</div>
 	</xsl:template>

@@ -69,9 +69,11 @@
 						<img src="{$display_path}images/atom-large.png" title="Atom" alt="Atom"/>
 					</a>
 				</div>
-				<div id="feature" style="margin:10px 0;">
-					<div class="ui-widget-header ui-helper-clearfix ui-corner-all">Featured Object</div>
-				</div>
+				<xsl:if test="//config/features_enabled = true()">
+					<div id="feature" style="margin:10px 0;">
+						<div class="ui-widget-header ui-helper-clearfix ui-corner-all">Featured Object</div>
+					</div>
+				</xsl:if>
 			</div>
 		</div>
 	</xsl:template>
