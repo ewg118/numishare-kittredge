@@ -21,7 +21,7 @@
 		<xsl:variable name="accnum" select="did/unitid[@type='accession']"/>
 		
 		<nuds recordType="physical" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:mets="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
-			xmlns:gml="http://www.opengis.net/gml">
+			xmlns:gml="http://www.opengis.net/gml/">
 			<nudsHeader>
 				<nudsid>
 					<xsl:value-of select="@id"/>
