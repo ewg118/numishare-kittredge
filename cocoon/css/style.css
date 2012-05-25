@@ -490,6 +490,9 @@ button.ui-multiselect {
 .departments>input {
 	vertical-align:bottom;
 }
+.olLayerGooglePoweredBy{
+	display:none;	
+}
 /*
   .olLayerGoogleCopyright {
   top:-1000px;
